@@ -51,13 +51,18 @@ alerts:
   js:
     assets/js/alerts.behaviors.js: { minified: false }
 
+axios:
+  version: 1.4.0
+  js:
+    https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js: { type: external, minified: true }
+
 gated-content-vue:
   version: 0.3
   js:
     js/gated-content/dist/gated-content.umd.min.js: { minified: true }
   dependencies:
     - openy_system/polyfill
-    - openy_system/axios
+    - openy_gated_content/axios
     - openy_system/vue
     - openy_system/vue-router
     - openy_system/vuex
