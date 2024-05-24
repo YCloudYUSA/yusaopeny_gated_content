@@ -162,7 +162,6 @@ function openy_gated_content_preprocess_html(&$variables) {
     }
 
     if ($node->hasField('layout_builder__layout')) {
-      $variables['#attached']['library'][] = 'openy_gated_content/y_lb';
       $variables['attributes']['class'][] = openy_gated_content_get_base_theme() . '-based';
       $variables['attributes']['class'][] = 'openy-gated-content';
     }
@@ -688,3 +687,15 @@ function _virtual_y_select_block_field_after_build($element, FormStateInterface 
   return $element;
 }
 
+/**
+ * Implements hook_preprocess_HOOK() for block templates.
+ */
+function openy_gated_content_preprocess_block(&$variables): void {
+  switch ($variables['plugin_id']) {
+    case 'inline_block:virtual_y_app':
+    case 'inline_block:virtual_y_login':
+      $variables['#attached']['library'][] = 'openy_gated_content/y_lb';
+
+      break;
+  }
+}
