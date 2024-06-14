@@ -340,9 +340,6 @@ function openy_gated_content_page_attachments(array &$attachments) {
   if (openy_gated_content_get_base_theme() === 'openy_lily') {
     $attachments['#attached']['library'][] = 'openy_gated_content/openy_lily_styles';
   }
-  if (openy_gated_content_get_base_theme() === 'openy_carnation') {
-    $attachments['#attached']['library'][] = 'openy_gated_content/openy_carnation_styles';
-  }
   if (openy_gated_content_get_base_theme() === 'openy_rose') {
     $attachments['#attached']['library'][] = 'openy_gated_content/openy_rose_styles';
   }
@@ -694,6 +691,7 @@ function openy_gated_content_preprocess_block(&$variables): void {
   switch ($variables['plugin_id']) {
     case 'inline_block:virtual_y_app':
     case 'inline_block:virtual_y_login':
+      $variables['#attached']['library'][] = 'openy_gated_content/openy_carnation_styles';
       $variables['#attached']['library'][] = 'openy_gated_content/y_lb';
 
       break;
