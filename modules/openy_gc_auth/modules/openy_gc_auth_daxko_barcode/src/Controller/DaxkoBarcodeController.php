@@ -197,7 +197,7 @@ class DaxkoBarcodeController extends ControllerBase {
       watchdog_exception('openy_gc_auth_daxko_barcode', $e);
     }
 
-    $response_status = $request->getStatusCode();
+    $response_status = $request?->getStatusCode();
     if ($response_status == 302) {
       $location = $request->getHeader('Location');
       return UrlHelper::parse(array_shift($location))['query'];
