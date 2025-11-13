@@ -2,6 +2,8 @@
 
 namespace Drupal\openy_gc_auth_daxko_barcode\Controller;
 
+use Drupal\Component\Utility\DeprecationHelper;
+use Drupal\Core\Utility\Error;
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Controller\ControllerBase;
@@ -194,7 +196,7 @@ class DaxkoBarcodeController extends ControllerBase {
     }
     catch (RequestException $e) {
       // Log the error.
-      watchdog_exception('openy_gc_auth_daxko_barcode', $e);
+      DeprecationHelper::backwardsCompatibleCall(\Drupal::VERSION, '10.1.0', fn() => Error::logException(\Drupal::logger('openy_gc_auth_daxko_barcode'), $e), fn() => watchdog_exception('openy_gc_auth_daxko_barcode', $e));
     }
 
     $response_status = $request?->getStatusCode();

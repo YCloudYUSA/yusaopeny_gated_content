@@ -35,7 +35,7 @@ class GCLogUserLoginSubscriber implements EventSubscriberInterface {
   /**
    * {@inheritdoc}
    */
-  public static function getSubscribedEvents() {
+  public static function getSubscribedEvents(): array {
     return [
       // Static class constant => method on this class.
       GCUserLoginEvent::EVENT_NAME => 'onUserLogin',

@@ -111,7 +111,7 @@ class GatedContentSubscriber implements EventSubscriberInterface {
   /**
    * {@inheritdoc}
    */
-  public static function getSubscribedEvents() {
+  public static function getSubscribedEvents(): array {
     // We need to have a priority of 31 or less to have the route available.
     $events[KernelEvents::REQUEST][] = ['accessCheck', 30];
     // @see \Drupal\Core\EventSubscriber\AnonymousUserResponseSubscriber.
