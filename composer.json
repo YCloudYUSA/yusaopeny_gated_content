@@ -29,7 +29,6 @@
     "extra": {
         "patches": {
             "drupal/field_inheritance": {
-                "Field cardinality is not preserved on inheritance https://dgo.re/3316144": "https://git.drupalcode.org/project/field_inheritance/-/merge_requests/3.diff",
                 "TypeError: in_array() with string instead of array in hook_entity_base_field_info() https://dgo.re/3539313": "https://git.drupalcode.org/project/field_inheritance/-/merge_requests/25.diff"
             }
         },
