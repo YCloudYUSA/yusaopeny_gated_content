@@ -3,7 +3,7 @@ type: module
 description: 'Provides Open Y Virtual YMCA ReClique authentication.'
 package: Open Y Virtual YMCA
 version: 1.7.1
-core_version_requirement: ^8 || ^9 || ^10
+core_version_requirement: ^8 || ^9 || ^10 || ^11
 dependencies:
   - drupal:simple_recaptcha
   - drupal:openy_gc_auth

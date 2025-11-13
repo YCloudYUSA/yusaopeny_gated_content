@@ -92,7 +92,7 @@ class DownloadsIncrementController extends ControllerBase {
       $status = 'error';
     }
 
-    return JsonResponse::create(['status' => $status]);
+    return new JsonResponse(['status' => $status]);
   }
 
 }

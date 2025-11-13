@@ -170,7 +170,7 @@ class UserController extends ControllerBase {
       // Clear any flood events for this IP.
       $this->flood->clear('openy_gc_auth_custom.login');
       $response = new RedirectResponse($vy_settings->get('virtual_y_url'), 302);
-      $response->headers->setCookie(new Cookie('Drupal_visitor_gc_auth_authorized', $token));
+      $response->headers->setCookie(Cookie::create('Drupal_visitor_gc_auth_authorized', $token));
       return $response;
     }
 

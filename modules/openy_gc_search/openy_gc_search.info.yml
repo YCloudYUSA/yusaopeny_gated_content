@@ -3,7 +3,7 @@ type: module
 description: 'Provides Open Y Virtual YMCA Search functionality.'
 package: Open Y Virtual YMCA
 version: 1.7.1
-core_version_requirement: ^8 || ^9 || ^10
+core_version_requirement: ^8 || ^9 || ^10 || ^11
 dependencies:
   - drupal:openy_gated_content
   - drupal:openy_search_api

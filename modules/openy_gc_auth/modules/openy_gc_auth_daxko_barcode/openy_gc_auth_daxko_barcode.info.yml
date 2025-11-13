@@ -3,7 +3,7 @@ type: module
 description: 'Daxko barcode integration for Virtual YMCA'
 package: Open Y Virtual YMCA
 version: 1.7.1
-core_version_requirement: ^8 || ^9 || ^10
+core_version_requirement: ^8 || ^9 || ^10 || ^11
 dependencies:
   - drupal:openy_gc_auth
   - drupal:simple_recaptcha
