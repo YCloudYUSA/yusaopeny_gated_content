@@ -2,6 +2,7 @@ name: Virtual YMCA Base
 type: module
 description: 'Virtual YMCA base module.'
 package: "YMCA Website Services"
+version: 1.9.1
 core_version_requirement: ^10 || ^11
 dependencies:
   - openy_system
