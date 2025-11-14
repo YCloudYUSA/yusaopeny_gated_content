@@ -2,7 +2,6 @@ name: Open Y Virtual Y shared content server
 type: module
 description: 'Virtual Y shared content server'
 package: Open Y Virtual YMCA
-version: 1.7.1
 core_version_requirement: ^10 || ^11
 dependencies:
   - drupal:big_pipe
