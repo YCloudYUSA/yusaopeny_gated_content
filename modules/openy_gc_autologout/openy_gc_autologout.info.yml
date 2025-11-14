@@ -2,5 +2,4 @@ name: Open Y Virtual YMCA Autologout
 type: module
 description: 'Virtual Y Autologout'
 package: Open Y Virtual YMCA
-version: 1.7.1
 core_version_requirement: ^10 || ^11
