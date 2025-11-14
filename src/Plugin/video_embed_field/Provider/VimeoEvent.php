@@ -24,7 +24,7 @@ class VimeoEvent extends ProviderPluginBase {
   /**
    * {@inheritdoc}
    */
-  public function renderEmbedCode($width, $height, $autoplay) {
+  public function renderEmbedCode($width, $height, $autoplay, $title_format = NULL, $use_title_fallback = TRUE) {
     $iframe = [
       '#type' => 'video_embed_iframe',
       '#provider' => 'vimeo_event',
@@ -39,6 +39,10 @@ class VimeoEvent extends ProviderPluginBase {
         'allowfullscreen' => 'allowfullscreen',
       ],
     ];
+    $title = $this->getName($title_format, $use_title_fallback);
+    if (isset($title)) {
+      $iframe['#attributes']['title'] = $title;
+    }
     if ($time_index = $this->getTimeIndex()) {
       $iframe['#fragment'] = sprintf('t=%s', $time_index);
     }
@@ -94,9 +98,12 @@ class VimeoEvent extends ProviderPluginBase {
   /**
    * {@inheritdoc}
    */
-  public function getName() {
-    $data = $this->oEmbedData();
-    return $data['title'];
+  public function getName($title_format = NULL, $use_title_fallback = TRUE) {
+    return $this->formatTitle(
+      $this->oEmbedData()['title'] ?? NULL,
+      $title_format,
+      $use_title_fallback
+    );
   }
 
 }
