@@ -83,11 +83,16 @@ function openy_gated_content_preprocess_paragraph(&$variables) {
     return;
   }
 
-  // Target only gated content paragraph.
-  if ($variables['paragraph']->getType() != 'gated_content') {
+  $paragraph = $variables['paragraph'];
+  $type = $paragraph->bundle();
+
+  if (!in_array($type, ['gated_content', 'gated_content_login'])) {
     return;
   }
 
+  // Attach needed libraries.
+  $variables['#attached']['library'][] = 'openy_gated_content/openy_carnation_styles';
+  $variables['#attached']['library'][] = 'openy_gated_content/y_lb';
   $variables['#cache']['tags'][] = 'config:openy_gated_content.settings';
   $variables['#cache']['tags'][] = 'config:openy_gc_auth.settings';
 
