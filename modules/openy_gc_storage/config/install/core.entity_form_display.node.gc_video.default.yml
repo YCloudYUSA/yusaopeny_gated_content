@@ -2,7 +2,7 @@ langcode: en
 status: true
 dependencies:
   config:
-    - entity_browser.browser.videos_library
+    - entity_browser.browser.images_library
     - field.field.node.gc_video.field_gc_duration_reference
     - field.field.node.gc_video.field_gc_instructor_reference
     - field.field.node.gc_video.field_gc_video_category
@@ -17,6 +17,7 @@ dependencies:
     - node.type.gc_video
   module:
     - entity_browser
+    - media_library
     - path
     - scheduler
     - text
@@ -115,20 +116,13 @@ content:
     type: options_select
     region: content
   field_gc_video_media:
-    type: entity_browser_entity_reference
+    type: media_library_widget
     weight: 2
-    settings:
-      entity_browser: videos_library
-      field_widget_display: rendered_entity
-      field_widget_edit: true
-      field_widget_remove: true
-      selection_mode: selection_append
-      field_widget_display_settings:
-        view_mode: thumbnail_for_preview
-      field_widget_replace: false
-      open: false
-    third_party_settings: {  }
     region: content
+    settings:
+      media_types:
+        - video
+    third_party_settings: {  }
   langcode:
     type: language_select
     weight: 11

@@ -262,3 +262,45 @@ function _openy_gc_storage_build_duration_references(&$sandbox) {
 function openy_gc_storage_post_update_migrate_node_durations(&$sandbox) {
   _openy_gc_storage_build_duration_references($sandbox);
 }
+
+/**
+ * Migrate gc_video media field from entity_browser to media_library widget.
+ */
+function openy_gc_storage_post_update_migrate_gc_video_media_widget() {
+  $form_display = \Drupal::entityTypeManager()
+    ->getStorage('entity_form_display')
+    ->load('node.gc_video.default');
+
+  if (!$form_display) {
+    return t('Form display node.gc_video.default not found.');
+  }
+
+  $component = $form_display->getComponent('field_gc_video_media');
+
+  if (!$component) {
+    return t('Field field_gc_video_media not found in form display.');
+  }
+
+  // Only migrate if still using entity_browser.
+  if ($component['type'] === 'entity_browser_entity_reference') {
+    $component['type'] = 'media_library_widget';
+    $component['settings'] = ['media_types' => ['video']];
+
+    // Remove entity_browser specific settings.
+    unset($component['settings']['entity_browser']);
+    unset($component['settings']['field_widget_display']);
+    unset($component['settings']['field_widget_edit']);
+    unset($component['settings']['field_widget_remove']);
+    unset($component['settings']['selection_mode']);
+    unset($component['settings']['field_widget_display_settings']);
+    unset($component['settings']['field_widget_replace']);
+    unset($component['settings']['open']);
+
+    $form_display->setComponent('field_gc_video_media', $component);
+    $form_display->save();
+
+    return t('Successfully migrated field_gc_video_media from entity_browser to media_library widget.');
+  }
+
+  return t('Field field_gc_video_media is already using media_library widget, no migration needed.');
+}
