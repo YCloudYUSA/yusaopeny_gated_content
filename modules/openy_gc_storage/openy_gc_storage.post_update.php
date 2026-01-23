@@ -262,3 +262,87 @@ function _openy_gc_storage_build_duration_references(&$sandbox) {
 function openy_gc_storage_post_update_migrate_node_durations(&$sandbox) {
   _openy_gc_storage_build_duration_references($sandbox);
 }
+
+/**
+ * Migrate entity_browser fields to media_library widget.
+ *
+ * This migrates all entity_browser_entity_reference widgets that use
+ * images_library or videos_library to the core media_library_widget.
+ */
+function openy_gc_storage_post_update_migrate_entity_browser_to_media_library() {
+  $form_displays = [
+    'node.gc_video.default' => ['field_gc_video_media' => 'video', 'field_gc_video_image' => 'image'],
+    'node.vy_blog_post.default' => ['field_vy_blog_image' => 'image'],
+    'eventinstance.live_stream.default' => ['field_ls_image' => 'image'],
+    'eventseries.live_stream.default' => ['field_ls_image' => 'image'],
+    'eventinstance.virtual_meeting.default' => ['field_ls_image' => 'image'],
+    'eventseries.virtual_meeting.default' => ['field_ls_image' => 'image'],
+    'taxonomy_term.gc_category.default' => ['field_gc_category_media' => 'image'],
+    'taxonomy_term.gc_instructor.default' => ['field_gc_instructor_photo' => 'image'],
+  ];
+
+  $storage = \Drupal::entityTypeManager()->getStorage('entity_form_display');
+  $migrated = [];
+  $skipped = [];
+
+  foreach ($form_displays as $display_id => $fields) {
+    $form_display = $storage->load($display_id);
+
+    if (!$form_display) {
+      $skipped[] = $display_id . ' (not found)';
+      continue;
+    }
+
+    $display_changed = FALSE;
+
+    foreach ($fields as $field_name => $media_type) {
+      $component = $form_display->getComponent($field_name);
+
+      if (!$component) {
+        continue;
+      }
+
+      // Only migrate if still using entity_browser.
+      if ($component['type'] === 'entity_browser_entity_reference') {
+        $component['type'] = 'media_library_widget';
+        $component['settings'] = ['media_types' => [$media_type]];
+
+        // Remove entity_browser specific settings.
+        unset($component['settings']['entity_browser']);
+        unset($component['settings']['field_widget_display']);
+        unset($component['settings']['field_widget_edit']);
+        unset($component['settings']['field_widget_remove']);
+        unset($component['settings']['selection_mode']);
+        unset($component['settings']['field_widget_display_settings']);
+        unset($component['settings']['field_widget_replace']);
+        unset($component['settings']['open']);
+
+        $form_display->setComponent($field_name, $component);
+        $display_changed = TRUE;
+        $migrated[] = $display_id . ' -> ' . $field_name;
+      }
+    }
+
+    if ($display_changed) {
+      // Recalculate dependencies after changing widget type.
+      $form_display->calculateDependencies();
+      $form_display->save();
+    }
+  }
+
+  $message = '';
+  if (!empty($migrated)) {
+    $message .= t('Successfully migrated @count fields: @list', [
+      '@count' => count($migrated),
+      '@list' => implode(', ', $migrated),
+    ]);
+  }
+  if (!empty($skipped)) {
+    $message .= ' ' . t('Skipped: @list', ['@list' => implode(', ', $skipped)]);
+  }
+  if (empty($migrated) && empty($skipped)) {
+    $message = t('All fields are already using media_library widget, no migration needed.');
+  }
+
+  return $message;
+}

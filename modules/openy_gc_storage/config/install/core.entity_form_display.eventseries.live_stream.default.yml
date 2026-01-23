@@ -1,3 +1,4 @@
+uuid: d39a7c13-6da8-4cde-9cd3-cc032da692bf
 langcode: en
 status: true
 dependencies:
@@ -14,6 +15,8 @@ dependencies:
   module:
     - datetime_range
     - entity_browser
+    - media_library
+    - openy_gated_content
     - recurring_events
     - text
 id: eventseries.live_stream.default
@@ -50,19 +53,19 @@ content:
   excluded_dates:
     type: daterange_default
     weight: 14
-    settings: {  }
     region: content
+    settings: {  }
     third_party_settings: {  }
   field_gc_instructor_reference:
+    type: entity_reference_autocomplete
     weight: 1
+    region: content
     settings:
       match_operator: CONTAINS
       match_limit: 10
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    type: entity_reference_autocomplete
-    region: content
   field_ls_category:
     type: entity_reference_autocomplete
     weight: 2
@@ -74,36 +77,29 @@ content:
       placeholder: ''
     third_party_settings: {  }
   field_ls_equipment:
+    type: entity_reference_autocomplete
     weight: 6
+    region: content
     settings:
-      placeholder: ''
       match_operator: CONTAINS
       match_limit: 10
       size: 60
+      placeholder: ''
     third_party_settings: {  }
-    type: entity_reference_autocomplete
-    region: content
   field_ls_image:
-    type: entity_browser_entity_reference
+    type: media_library_widget
     weight: 4
-    settings:
-      entity_browser: images_library
-      field_widget_display: rendered_entity
-      field_widget_edit: true
-      field_widget_remove: true
-      selection_mode: selection_append
-      field_widget_display_settings:
-        view_mode: thumbnail_for_preview
-      field_widget_replace: false
-      open: false
-    third_party_settings: {  }
     region: content
+    settings:
+      media_types:
+        - image
+    third_party_settings: {  }
   field_ls_level:
+    type: options_select
     weight: 3
+    region: content
     settings: {  }
     third_party_settings: {  }
-    type: options_select
-    region: content
   field_ls_media:
     type: entity_browser_entity_reference
     weight: 5
@@ -113,17 +109,23 @@ content:
       field_widget_display: rendered_entity
       field_widget_edit: true
       field_widget_remove: true
-      selection_mode: selection_append
-      field_widget_display_settings:
-        view_mode: thumbnail_for_preview
       field_widget_replace: false
       open: false
+      field_widget_display_settings:
+        view_mode: thumbnail_for_preview
+      selection_mode: selection_append
+    third_party_settings: {  }
+  field_vy_permission:
+    type: virtual_y_roles_select
+    weight: 26
+    region: content
+    settings: {  }
     third_party_settings: {  }
   included_dates:
     type: daterange_default
     weight: 15
-    settings: {  }
     region: content
+    settings: {  }
     third_party_settings: {  }
   monthly_recurring_date:
     type: monthly_recurring_date
@@ -139,10 +141,10 @@ content:
     third_party_settings: {  }
   status:
     type: boolean_checkbox
-    settings:
-      display_label: true
     weight: 17
     region: content
+    settings:
+      display_label: true
     third_party_settings: {  }
   title:
     type: string_textfield
@@ -155,16 +157,22 @@ content:
   uid:
     type: entity_reference_autocomplete
     weight: 16
+    region: content
     settings:
       match_operator: CONTAINS
+      match_limit: 10
       size: 60
       placeholder: ''
-      match_limit: 10
-    region: content
     third_party_settings: {  }
   weekly_recurring_date:
     type: weekly_recurring_date
     weight: 11
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  yearly_recurring_date:
+    type: yearly_recurring_date
+    weight: 7
     region: content
     settings: {  }
     third_party_settings: {  }

@@ -1,3 +1,4 @@
+uuid: e12ed9f3-e235-49eb-b07a-bd42e8b031a4
 langcode: en
 status: true
 dependencies:
@@ -16,6 +17,9 @@ dependencies:
   module:
     - datetime_range
     - entity_browser
+    - field_inheritance
+    - media_library
+    - openy_gated_content
     - text
 id: eventinstance.live_stream.default
 targetEntityType: eventinstance
@@ -37,102 +41,108 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_gc_instructor_reference:
+    type: entity_reference_autocomplete
     weight: 1
+    region: content
     settings:
       match_operator: CONTAINS
       match_limit: 10
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    type: entity_reference_autocomplete
+  field_inheritance:
+    type: field_inheritance_default
+    weight: 0
     region: content
+    settings:
+      elements: both
+    third_party_settings: {  }
   field_ls_category:
+    type: entity_reference_autocomplete
     weight: 2
+    region: content
     settings:
       match_operator: CONTAINS
       match_limit: 10
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    type: entity_reference_autocomplete
-    region: content
   field_ls_equipment:
+    type: entity_reference_autocomplete
     weight: 6
+    region: content
     settings:
       match_operator: CONTAINS
       match_limit: 10
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    type: entity_reference_autocomplete
-    region: content
   field_ls_featured:
+    type: boolean_checkbox
     weight: 10
+    region: content
     settings:
       display_label: true
     third_party_settings: {  }
-    type: boolean_checkbox
-    region: content
   field_ls_image:
-    type: entity_browser_entity_reference
+    type: media_library_widget
     weight: 4
-    settings:
-      entity_browser: images_library
-      field_widget_display: rendered_entity
-      field_widget_edit: true
-      field_widget_remove: true
-      selection_mode: selection_append
-      field_widget_display_settings:
-        view_mode: thumbnail_for_preview
-      field_widget_replace: false
-      open: false
-    third_party_settings: {  }
     region: content
+    settings:
+      media_types:
+        - image
+    third_party_settings: {  }
   field_ls_level:
+    type: options_select
     weight: 3
+    region: content
     settings: {  }
     third_party_settings: {  }
-    type: options_select
-    region: content
   field_ls_media:
     type: entity_browser_entity_reference
     weight: 5
+    region: content
     settings:
       entity_browser: videos_library
       field_widget_display: rendered_entity
       field_widget_edit: true
       field_widget_remove: true
-      selection_mode: selection_append
-      field_widget_display_settings:
-        view_mode: thumbnail_for_preview
       field_widget_replace: false
       open: false
+      field_widget_display_settings:
+        view_mode: thumbnail_for_preview
+      selection_mode: selection_append
     third_party_settings: {  }
-    region: content
   field_ls_title:
+    type: string_textfield
     weight: 0
+    region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    type: string_textfield
+  field_vy_permission:
+    type: virtual_y_roles_select
+    weight: 26
     region: content
+    settings: {  }
+    third_party_settings: {  }
   status:
     type: boolean_checkbox
-    settings:
-      display_label: true
     weight: 11
     region: content
+    settings:
+      display_label: true
     third_party_settings: {  }
   uid:
     type: entity_reference_autocomplete
     weight: 8
+    region: content
     settings:
       match_operator: CONTAINS
+      match_limit: 10
       size: 60
       placeholder: ''
-      match_limit: 10
-    region: content
     third_party_settings: {  }
 hidden:
   field_ls_host_name: true
