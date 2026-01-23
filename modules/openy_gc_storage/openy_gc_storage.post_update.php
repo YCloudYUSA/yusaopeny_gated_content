@@ -324,6 +324,8 @@ function openy_gc_storage_post_update_migrate_entity_browser_to_media_library() 
     }
 
     if ($display_changed) {
+      // Recalculate dependencies after changing widget type.
+      $form_display->calculateDependencies();
       $form_display->save();
     }
   }
