@@ -16,6 +16,10 @@ services:
     arguments: ['@openy_gated_content.user_service', '@config.factory', '@plugin.manager.gc_identity_provider']
     tags:
       - { name: event_subscriber }
+  openy_gated_content.jsonapi_request_normalizer:
+    class: '\Drupal\openy_gated_content\EventSubscriber\JsonApiRequestNormalizer'
+    tags:
+      - { name: event_subscriber }
   # Custom cache bin for favorites controller.
   cache.vy_favorites:
     class: Drupal\Core\Cache\CacheBackendInterface
