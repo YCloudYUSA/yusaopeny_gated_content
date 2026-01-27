@@ -72,43 +72,44 @@ class JsonApiRequestNormalizer implements EventSubscriberInterface {
    * @param \Symfony\Component\HttpFoundation\Request $request
    *   The request object.
    * @param array $page_data
-   *   The page limit and offset.
+   *   The original page query parameters.
    */
   private function updateQueryString($request, $page_data) {
-    // Build new query string with page params in bracket notation.
-    $parts = [];
+   // Build new query string with page params in bracket notation.
+   $parts = [];
 
-    // Add all non-page query params.
-    foreach ($request->query->all() as $key => $value) {
-      if ($key !== 'page_limit' && $key !== 'page_offset') {
-        if (is_array($value)) {
-          // Handle nested arrays (filter, sort, etc.).
-          foreach ($value as $k => $v) {
-            if (is_array($v)) {
-              foreach ($v as $kk => $vv) {
-                $parts[] = urlencode($key) . '[' . urlencode($k) . '][' . urlencode($kk) . ']=' . urlencode($vv);
-              }
-            } else {
-              $parts[] = urlencode($key) . '[' . urlencode($k) . ']=' . urlencode($v);
-            }
-          }
-        } else {
-          $parts[] = urlencode($key) . '=' . urlencode($value);
-        }
-      }
-    }
+   // Add all non-page query params.
+   foreach ($request->query->all() as $key => $value) {
+     if ($key !== 'page_limit' && $key !== 'page_offset') {
+       if (is_array($value)) {
+         // Handle nested arrays (filter, sort, etc.).
+         foreach ($value as $k => $v) {
+           if (is_array($v)) {
+             foreach ($v as $kk => $vv) {
+               $parts[] = urlencode($key) . '[' . urlencode($k) . '][' . urlencode($kk) . ']=' . urlencode($vv);
+             }
+           } else {
+             $parts[] = urlencode($key) . '[' . urlencode($k) . ']=' . urlencode($v);
+           }
+         }
+       } else {
+         $parts[] = urlencode($key) . '=' . urlencode($value);
+       }
+     }
+   }
 
-    // Add page params in bracket notation that JSON:API expects.
-    if (isset($page_data['offset'])) {
-      $parts[] = 'page[offset]=' . (int) $page_data['offset'];
-    }
-    if (isset($page_data['limit'])) {
-      $parts[] = 'page[limit]=' . (int) $page_data['limit'];
-    }
+   // Add all original page params in bracket notation that JSON:API expects.
+   foreach ($page_data as $key => $value) {
+     // Preserve existing behavior of casting limit/offset to integers.
+     if ($key === 'limit' || $key === 'offset') {
+       $value = (int) $value;
+     }
+     $parts[] = 'page[' . urlencode($key) . ']=' . urlencode($value);
+   }
 
-    // Update the server query string.
-    $query_string = implode('&', $parts);
-    $request->server->set('QUERY_STRING', $query_string);
+   // Update the server query string.
+   $query_string = implode('&', $parts);
+   $request->server->set('QUERY_STRING', $query_string);
   }
 
 }
