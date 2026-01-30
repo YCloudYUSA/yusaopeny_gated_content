@@ -346,3 +346,53 @@ function openy_gc_storage_post_update_migrate_entity_browser_to_media_library() 
 
   return $message;
 }
+
+/**
+ * Migrate field_ls_media on live_stream events to media_library widget.
+ *
+ * This fixes an oversight in the previous migration that missed field_ls_media
+ * (video field) on live_stream event forms, causing "Entity browser
+ * videos_library not found" error.
+ */
+function openy_gc_storage_post_update_migrate_live_stream_media_field() {
+  $form_displays = [
+    'eventinstance.live_stream.default' => 'field_ls_media',
+    'eventseries.live_stream.default' => 'field_ls_media',
+  ];
+
+  $storage = \Drupal::entityTypeManager()->getStorage('entity_form_display');
+  $migrated = [];
+
+  foreach ($form_displays as $display_id => $field_name) {
+    $form_display = $storage->load($display_id);
+
+    if (!$form_display) {
+      continue;
+    }
+
+    $component = $form_display->getComponent($field_name);
+
+    if (!$component) {
+      continue;
+    }
+
+    // Only migrate if still using entity_browser.
+    if ($component['type'] === 'entity_browser_entity_reference') {
+      $component['type'] = 'media_library_widget';
+      $component['settings'] = ['media_types' => ['video']];
+
+      $form_display->setComponent($field_name, $component);
+      $form_display->calculateDependencies();
+      $form_display->save();
+      $migrated[] = $display_id . ' -> ' . $field_name;
+    }
+  }
+
+  if (!empty($migrated)) {
+    return t('Migrated field_ls_media to media_library: @list', [
+      '@list' => implode(', ', $migrated),
+    ]);
+  }
+
+  return t('field_ls_media already using media_library widget, no migration needed.');
+}
