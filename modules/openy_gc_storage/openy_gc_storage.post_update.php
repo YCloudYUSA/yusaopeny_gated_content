@@ -396,3 +396,30 @@ function openy_gc_storage_post_update_migrate_live_stream_media_field() {
 
   return t('field_ls_media already using media_library widget, no migration needed.');
 }
+
+/**
+ * Fix media view thumbnail image style from browser_thumbnail to media_library.
+ *
+ * The browser_thumbnail image style was removed with entity_browser deprecation,
+ * causing "Call to a member function getCacheTags() on null" error on
+ * /admin/content/media page.
+ */
+function openy_gc_storage_post_update_fix_media_view_image_style() {
+  $config = \Drupal::configFactory()->getEditable('views.view.media');
+
+  if ($config->isNew()) {
+    return t('Media view not found, skipping.');
+  }
+
+  $image_style = $config->get('display.default.display_options.fields.thumbnail__target_id.settings.image_style');
+
+  if ($image_style === 'browser_thumbnail') {
+    $config->set('display.default.display_options.fields.thumbnail__target_id.settings.image_style', 'media_library');
+    $config->save();
+    return t('Changed media view thumbnail image_style from browser_thumbnail to media_library.');
+  }
+
+  return t('Media view image_style is already correct (@style), no change needed.', [
+    '@style' => $image_style,
+  ]);
+}
