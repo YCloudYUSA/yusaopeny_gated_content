@@ -10,7 +10,6 @@ dependencies:
   module:
     - link
     - media_library
-    - openy_focal_point
     - text
 id: paragraph.gated_content.default
 targetEntityType: paragraph
