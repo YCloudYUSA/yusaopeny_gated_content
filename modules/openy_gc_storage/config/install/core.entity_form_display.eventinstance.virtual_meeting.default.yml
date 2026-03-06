@@ -18,7 +18,6 @@ dependencies:
     - field_inheritance
     - link
     - media_library
-    - openy_gated_content
     - text
 id: eventinstance.virtual_meeting.default
 targetEntityType: eventinstance
@@ -113,12 +112,6 @@ content:
       placeholder_url: ''
       placeholder_title: ''
     third_party_settings: {  }
-  field_vy_permission:
-    type: virtual_y_roles_select
-    weight: 26
-    region: content
-    settings: {  }
-    third_party_settings: {  }
   status:
     type: boolean_checkbox
     weight: 11
@@ -138,3 +131,4 @@ content:
     third_party_settings: {  }
 hidden:
   field_ls_host_name: true
+  field_vy_permission: true

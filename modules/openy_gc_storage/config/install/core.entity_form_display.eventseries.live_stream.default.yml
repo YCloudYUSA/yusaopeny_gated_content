@@ -14,7 +14,6 @@ dependencies:
   module:
     - datetime_range
     - media_library
-    - openy_gated_content
     - recurring_events
     - text
 id: eventseries.live_stream.default
@@ -106,12 +105,6 @@ content:
       media_types:
         - video
     third_party_settings: {  }
-  field_vy_permission:
-    type: virtual_y_roles_select
-    weight: 26
-    region: content
-    settings: {  }
-    third_party_settings: {  }
   included_dates:
     type: daterange_default
     weight: 15
@@ -169,3 +162,4 @@ content:
     third_party_settings: {  }
 hidden:
   field_ls_host_name: true
+  field_vy_permission: true
