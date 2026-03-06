@@ -11,7 +11,6 @@ dependencies:
   - drupal:jsonapi_image_styles
   - drupal:field
   - drupal:field_inheritance
-  - drupal:entity_browser
   - drupal:language
   - drupal:media
   - drupal:menu_ui

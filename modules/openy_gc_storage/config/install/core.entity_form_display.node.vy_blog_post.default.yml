@@ -9,7 +9,6 @@ dependencies:
     - node.type.vy_blog_post
   module:
     - media_library
-    - openy_gated_content
     - path
     - scheduler
     - text
@@ -64,12 +63,6 @@ content:
     settings:
       media_types:
         - image
-    third_party_settings: {  }
-  field_vy_permission:
-    type: virtual_y_roles_select
-    weight: 27
-    region: content
-    settings: {  }
     third_party_settings: {  }
   langcode:
     type: language_select
@@ -161,3 +154,4 @@ content:
 hidden:
   field_inheritance: true
   field_share_count: true
+  field_vy_permission: true
