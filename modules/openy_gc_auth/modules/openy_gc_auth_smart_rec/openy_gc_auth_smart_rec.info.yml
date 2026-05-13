@@ -1,0 +1,8 @@
+name: 'Open Y Virtual Y Auth - Smart Rec (Amilia)'
+type: module
+description: 'Provides Virtual Y authentication via the Amilia Smart Rec network membership API. Validates users by email address against the configured Amilia network.'
+package: 'Open Y Virtual YMCA'
+core_version_requirement: ^9 || ^10 || ^11
+dependencies:
+  - openy_gc_auth:openy_gc_auth
+  - openy_smart_rec:openy_smart_rec
