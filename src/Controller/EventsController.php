@@ -142,8 +142,8 @@ class EventsController extends ControllerBase {
    */
   protected function getEventInstances(
     array $bundles,
-    DrupalDateTime $start_date = NULL,
-    DrupalDateTime $end_date = NULL
+    ?DrupalDateTime $start_date = NULL,
+    ?DrupalDateTime $end_date = NULL
   ): array {
     $roles = $this->currentUser()->getRoles(TRUE);
     $vy_roles = array_filter($roles, function ($role) {
