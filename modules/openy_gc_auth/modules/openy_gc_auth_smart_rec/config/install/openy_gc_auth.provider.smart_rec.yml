@@ -1,0 +1,3 @@
+enable_captcha: false
+verification_text: 'Please enter the email address associated with your YMCA membership.'
+not_member_text: 'We could not find a membership record for that email address. Please verify your email or contact the YMCA for assistance.'
