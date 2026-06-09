@@ -2,6 +2,5 @@ name: Open Y Virtual YMCA Auth
 type: module
 description: 'Provides Open Y Virtual YMCA authentication provider.'
 package: Open Y Virtual YMCA
-version: 0.1
-core: 8.x
-core_version_requirement: ^8 || ^9
+version: 1.7.1
+core_version_requirement: ^8 || ^9 || ^10

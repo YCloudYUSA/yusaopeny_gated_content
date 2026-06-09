@@ -12,6 +12,7 @@
 @media (min-width: 1060px) {
   .openy_carnation .desktop-menu .page-head__main-menu .navbar > li > a {
     font-size: 14px;
+    line-height: 21px;
     padding-left: 2px;
     padding-right: 2px;
   }
@@ -21,7 +22,7 @@
   .openy_carnation .desktop-menu .page-head__main-menu .menu-item-home a {
     width: 80px;
   }
-  .openy_carnation.openy-gated-content.toolbar-fixed #block-openy-carnation-content #gated-content .top-menu {
+  body:not(.page-with-lb) .openy_carnation.openy-gated-content.toolbar-fixed #block-openy-carnation-content #gated-content .top-menu {
     margin-top: 86px;
   }
   .openy_carnation.openy-gated-content.toolbar-fixed #block-openy-carnation-content #gated-content .gated-content-favorites-page,
@@ -53,7 +54,7 @@
   .openy_carnation.openy-gated-content .header-content .nav-desktop .navbar li {
     margin: 0 5px;
   }
-  .openy_carnation-based.openy-gated-content #gated-content .top-menu {
+  body:not(.page-with-lb) .openy_carnation-based.openy-gated-content #gated-content .top-menu {
     top: 78px !important;
   }
   .openy_carnation-based.openy-gated-content.toolbar-fixed #gated-content {
@@ -74,7 +75,7 @@
 }
 
 @media (max-width: 1059px) {
-  .openy_carnation-based.openy-gated-content .viewport #gated-content .top-menu {
+  body:not(.page-with-lb) .openy_carnation-based.openy-gated-content .viewport #gated-content .top-menu {
     top: 78px !important;
   }
   .openy_carnation-based.openy-gated-content #gated-content {
@@ -89,10 +90,10 @@
   .openy_carnation-based.openy-gated-content.toolbar-fixed #gated-content {
     padding-top: 88px;
   }
-  .openy_carnation-based.openy-gated-content.toolbar-fixed #gated-content .top-menu {
+  body:not(.page-with-lb) .openy_carnation-based.openy-gated-content.toolbar-fixed #gated-content .top-menu {
     top: 116px !important;
   }
-  .openy_carnation-based.openy-gated-content.toolbar-fixed.toolbar-tray-open #gated-content .top-menu {
+  body:not(.page-with-lb) .openy_carnation-based.openy-gated-content.toolbar-fixed.toolbar-tray-open #gated-content .top-menu {
     top: 156px !important;
   }
   .openy_carnation-based.openy-gated-content.toolbar-fixed #gated-content .date-filter {

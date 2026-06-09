@@ -311,6 +311,25 @@ function openy_gc_storage_update_8016() {
  * Update/create configs related to Duration reference field.
  */
 function openy_gc_storage_update_8017() {
+  // If this update hook fails it's possible that content was added to the 
+  // vocabulary before it was properly created. In that case, uncomment the
+  // following commands to remove the terms before proceeding.
+  
+  // Ensure duplicate content doesn't exist before creating the field.
+  //  $database = \Drupal::database();
+  //  $tables = [
+  //    'taxonomy_term__field_gc_duration_max',
+  //    'taxonomy_term__field_gc_duration_min',
+  //    'taxonomy_term_revision__field_gc_duration_max',
+  //    'taxonomy_term_revision__field_gc_duration_min',
+  //  ];
+  //
+  //  foreach ($tables as $table) {
+  //    if ($database->schema()->tableExists($table)) {
+  //      $database->truncate($table);
+  //    }
+  //  }
+
   $config_dir = \Drupal::service('extension.list.module')->getPath('openy_gc_storage');
   $config_dir .= '/config/install/';
   // Update configuration.
@@ -332,5 +351,24 @@ function openy_gc_storage_update_8017() {
     'core.entity_view_display.taxonomy_term.gc_duration.default',
     'core.entity_view_display.node.gc_video.default',
     'core.entity_view_display.node.gc_video.teaser',
+  ]);
+}
+
+/**
+ * Update configs related to the entity reference field inheritance.
+ */
+function openy_gc_storage_update_8018() {
+  $config_dir = \Drupal::service('extension.list.module')->getPath('openy_gc_storage');
+  $config_dir .= '/config/install/';
+  // Update configuration.
+  $config_importer = \Drupal::service('openy_upgrade_tool.importer');
+  $config_importer->setDirectory($config_dir);
+  $config_importer->importConfigs([
+    'field_inheritance.field_inheritance.eventinstance_live_stream_category',
+    'field_inheritance.field_inheritance.eventinstance_live_stream_equipment',
+    'field_inheritance.field_inheritance.eventinstance_live_stream_instructor_reference',
+    'field_inheritance.field_inheritance.eventinstance_virtual_meeting_category',
+    'field_inheritance.field_inheritance.eventinstance_virtual_meeting_equipment',
+    'field_inheritance.field_inheritance.eventinstance_virtual_meeting_instructor_reference',
   ]);
 }

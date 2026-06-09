@@ -39,12 +39,20 @@ source:
     roles:
       - authenticated
       - virtual_y
+    space: ' '
 process:
   roles: 'constants/roles'
+  pseudo_name:
+    plugin: callback
+    callable: trim
+    unpack_source: true
+    source:
+      - first_name
+      - constants/space
   name:
     plugin: concat
     source:
-      - first_name
+      - '@pseudo_name'
       - member_id
     delimiter: ' '
   mail:

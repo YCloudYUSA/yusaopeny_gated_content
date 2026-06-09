@@ -39,7 +39,40 @@ function openy_gated_content_theme() {
         'auth_configuration' => '',
       ],
     ],
+    'gated_content_app' => [
+      'variables' => [
+        'headline' => '',
+        'app_settings' => '',
+      ],
+    ],
+    'gated_content_login' => [
+      'variables' => [
+        'auth_form' => [],
+      ],
+    ],
+    'block__virtual_y_app' => [
+      'base hook' => 'block',
+      'template' => 'block--virtual-y-app',
+    ]
   ];
+}
+
+/**
+ * Implements hook_preprocess_gated_content_login().
+ */
+function openy_gated_content_preprocess_gated_conten_login(&$variables) {
+  $variables['#cache']['tags'][] = 'config:openy_gated_content.settings';
+  $variables['#cache']['tags'][] = 'config:openy_gc_auth.settings';
+
+  $active_provider = \Drupal::config('openy_gc_auth.settings')->get('active_provider');
+  $identityProviderManager = \Drupal::service('plugin.manager.gc_identity_provider');
+  $plugin_definition = $identityProviderManager->getDefinition($active_provider, FALSE);
+  if (!$plugin_definition) {
+    return;
+  }
+
+  $plugin_instance = $identityProviderManager->createInstance($active_provider);
+  $variables['#cache']['tags'][] = 'config:' . $plugin_instance->getConfigName();
 }
 
 /**
@@ -49,21 +82,15 @@ function openy_gated_content_preprocess_paragraph(&$variables) {
   if (!isset($variables['paragraph'])) {
     return;
   }
-  $paragraphs_list = ['gated_content', 'gated_content_login'];
-  if (!in_array($variables['paragraph']->getType(), $paragraphs_list)) {
+
+  // Target only gated content paragraph.
+  if ($variables['paragraph']->getType() != 'gated_content') {
     return;
   }
 
   $variables['#cache']['tags'][] = 'config:openy_gated_content.settings';
   $variables['#cache']['tags'][] = 'config:openy_gc_auth.settings';
-  $active_provider = \Drupal::config('openy_gc_auth.settings')->get('active_provider');
-  $identityProviderManager = \Drupal::service('plugin.manager.gc_identity_provider');
-  $plugin_definition = $identityProviderManager->getDefinition($active_provider, FALSE);
-  if (!$plugin_definition) {
-    return;
-  }
 
-  $plugin_instance = $identityProviderManager->createInstance($active_provider);
   $app_config = \Drupal::config('openy_gated_content.settings')->getOriginal();
 
   // Give ability for 3rd party modules to alter data for the js app.
@@ -71,36 +98,32 @@ function openy_gated_content_preprocess_paragraph(&$variables) {
 
   $variables['app_settings'] = json_encode($app_config);
 
-  if ($variables['paragraph']->getType() === 'gated_content') {
-    $backgroundImage = '';
-    if ($mediaImage = $variables['paragraph']->field_prgf_image->entity) {
-      $display_options = EntityViewDisplay::collectRenderDisplay($variables['paragraph'], 'default')
-        ->getComponent('field_prgf_image');
-      $image_style = \Drupal::service('entity_type.manager')->getStorage('image_style')
-        ->load($display_options['settings']['image_style']);
-      $backgroundImage = $image_style->buildUrl($mediaImage->field_media_image->entity->uri->value);
-    }
-
-    if (empty($backgroundImage)) {
-      $file = 'base://' . \Drupal::service('extension.list.module')->getPath('openy_gated_content') . '/assets/img/paragraph-headline.png';
-      $backgroundImage = Url::fromUri($file)->setAbsolute()->toString();
-    }
-
-    $headline = [
-      'title' => $variables['paragraph']->field_prgf_title->value,
-      'description' => $variables['paragraph']->field_prgf_description->value,
-      'backgroundImage' => $backgroundImage,
-    ];
-
-    if ($variables['paragraph']->field_prgf_link->title) {
-      $headline['linkText'] = $variables['paragraph']->field_prgf_link->title;
-      $headline['linkUrl'] = Url::fromUri($variables['paragraph']->field_prgf_link->uri)->toString();
-    }
-
-    $variables['headline'] = json_encode($headline);
+  $backgroundImage = '';
+  if ($mediaImage = $variables['paragraph']->field_prgf_image->entity) {
+    $display_options = EntityViewDisplay::collectRenderDisplay($variables['paragraph'], 'default')
+      ->getComponent('field_prgf_image');
+    $image_style = \Drupal::service('entity_type.manager')->getStorage('image_style')
+      ->load($display_options['settings']['image_style']);
+    $backgroundImage = $image_style->buildUrl($mediaImage->field_media_image->entity->uri->value);
   }
 
-  $variables['#cache']['tags'][] = 'config:' . $plugin_instance->getConfigName();
+  if (empty($backgroundImage)) {
+    $file = 'base://' . \Drupal::service('extension.list.module')->getPath('openy_gated_content') . '/assets/img/paragraph-headline.png';
+    $backgroundImage = Url::fromUri($file)->setAbsolute()->toString();
+  }
+
+  $headline = [
+    'title' => $variables['paragraph']->field_prgf_title->value,
+    'description' => $variables['paragraph']->field_prgf_description->value,
+    'backgroundImage' => $backgroundImage,
+  ];
+
+  if ($variables['paragraph']->field_prgf_link->title) {
+    $headline['linkText'] = $variables['paragraph']->field_prgf_link->title;
+    $headline['linkUrl'] = Url::fromUri($variables['paragraph']->field_prgf_link->uri)->toString();
+  }
+
+  $variables['headline'] = json_encode($headline);
 }
 
 /**
@@ -136,6 +159,12 @@ function openy_gated_content_preprocess_html(&$variables) {
           }
         }
       }
+    }
+
+    if ($node->hasField('layout_builder__layout')) {
+      $variables['#attached']['library'][] = 'openy_gated_content/y_lb';
+      $variables['attributes']['class'][] = openy_gated_content_get_base_theme() . '-based';
+      $variables['attributes']['class'][] = 'openy-gated-content';
     }
   }
 }
@@ -204,6 +233,29 @@ function openy_gated_content_jsonapi_taxonomy_term_filter_access(EntityTypeInter
  * Implements hook_form_alter().
  */
 function openy_gated_content_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  // Blocks for LB.
+  if (in_array($form_id,
+    [
+      'layout_builder_add_block',
+      'layout_builder_update_block',
+    ]
+  )) {
+    /** @var \Drupal\layout_builder\Form\ConfigureBlockFormBase $form_object */
+    $form_object = $form_state->getFormObject();
+    $component = $form_object->getCurrentComponent();
+    $plugin = $component->getPlugin();
+    $block_id = $plugin->getDerivativeId() ?? $plugin->getBaseId();
+
+    if (in_array($block_id, ['virtual_y_app', 'virtual_y_login'])) {
+      // Hide title fields that related to inline block itself.
+      $form['settings']['admin_label']['#access'] = FALSE;
+      $form['settings']['label']['#access'] = FALSE;
+      $form['settings']['label_display']['#access'] = FALSE;
+      if (isset($form['settings']['block_form'])) {
+        $form['settings']['block_form']['#process'][] = '_virtual_y_inline_block_process';
+      }
+    }
+  }
   $event_series_forms = [
     'eventseries_live_stream_edit_form',
     'eventseries_virtual_meeting_edit_form',
@@ -440,6 +492,7 @@ function openy_gated_content_taxonomy_term_gc_duration_validation(array &$form, 
 
   $query = $taxonomy_storage->getQuery()
     ->condition('vid', 'gc_duration')
+    ->accessCheck()
     ->range(0, 1)
     // "start-2"
     ->condition('field_gc_duration_min', $max[0]['value'], '<=')
@@ -590,3 +643,48 @@ function openy_gated_content_entity_delete(EntityInterface $entity) {
     ->getInstanceFromDefinition(VyFavoriteItemsManager::class)
     ->deleteRelatedFavoriteItems($entity);
 }
+
+
+/**
+ * Custom process callback for inline block elements.
+ *
+ * @param array $element
+ *   Element to process.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   The form state.
+ *
+ * @return array
+ *   Processed element.
+ */
+function _virtual_y_inline_block_process(array $element, FormStateInterface $form_state) {
+  if (isset($element['field_virtual_y'])) {
+    $element['field_virtual_y']['widget']['#after_build'][] = '_virtual_y_select_block_field_after_build';
+  }
+  if (isset($element['field_virtual_y_login'])) {
+    $element['field_virtual_y_login']['widget']['#after_build'][] = '_virtual_y_select_block_field_after_build';
+  }
+  return $element;
+}
+
+/**
+ * Custom '#after_build' callback for field_block.
+ *
+ * @param array $element
+ *   Element to process.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   The form state.
+ *
+ * @return array
+ *   Processed element.
+ */
+function _virtual_y_select_block_field_after_build($element, FormStateInterface $form_state) {
+  if (isset($element[0]['plugin_selector']['container'])) {
+    // Hide the select block field.
+    $element[0]['plugin_selector']['container']['select']['container']['#attributes']['class'][] = 'hidden';
+    // Override a text before edit the Virtual Y Content block settings.
+    $element[0]['plugin_selector']['container']['plugin_form']['admin_label']['#title'] = t('Please configure your Virtual Y App block.');
+    unset($element[0]['plugin_selector']['container']['plugin_form']['admin_label']['#plain_text']);
+  }
+  return $element;
+}
+

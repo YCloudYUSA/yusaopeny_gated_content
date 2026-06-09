@@ -1,7 +1,7 @@
 .toolbar .toolbar-tray {
   z-index: 1031;
 }
-.openy_carnation-based.openy-gated-content {
+.openy_carnation-based.openy-gated-content:not(.page-with-lb) {
   main > div > div {
     > .banner {
       display: none;

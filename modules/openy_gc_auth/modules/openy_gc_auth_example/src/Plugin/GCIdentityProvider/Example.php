@@ -25,6 +25,7 @@ class Example extends GCIdentityProviderPluginBase {
       'token' => '',
       'password' => '',
       'redirect_url' => '',
+      'autosubmit' => ''
     ];
   }
 
@@ -67,6 +68,13 @@ class Example extends GCIdentityProviderPluginBase {
       '#required' => TRUE,
     ];
 
+    $form['autosubmit'] = [
+      '#title' => $this->t('Autosubmit'),
+      '#description' => $this->t('Automatically submit the login form'),
+      '#type' => 'checkbox',
+      '#default_value' => $config['autosubmit'] ?? FALSE,
+    ];
+
     return $form;
   }
 
@@ -78,6 +86,7 @@ class Example extends GCIdentityProviderPluginBase {
       $this->configuration['user'] = $form_state->getValue('user');
       $this->configuration['token'] = $form_state->getValue('token');
       $this->configuration['redirect_url'] = $form_state->getValue('redirect_url');
+      $this->configuration['autosubmit'] = $form_state->getValue('autosubmit');
       if ($form_state->getValue('password')) {
         // Override only in case empty value.
         $this->configuration['password'] = $form_state->getValue('password');

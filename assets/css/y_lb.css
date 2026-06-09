@@ -1,0 +1,51 @@
+.block-inline-blockvirtual-y-app #gated-content {
+  padding-top: 0;
+}
+
+.openy_carnation-based.virtual-ymca #gated-content {
+  padding-top: 0;
+}
+
+.openy_carnation-based.virtual-ymca #gated-content .top-menu {
+  top: 142px;
+  padding: 0 15px;
+  left: 0;
+  right: 0;
+  z-index: 100;
+}
+
+.openy_carnation.page-with-lb article,
+.openy_carnation.page-with-lb .openy-page-tabs {
+  display: block;
+}
+
+.openy_carnation.virtual-ymca article .ws-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: white;
+  z-index: 101;
+}
+
+.openy_carnation-based.virtual-ymca #openy_alerts_app_header {
+  margin-top: 216px;
+}
+
+.openy_carnation-based.virtual-ymca #gated-content .gated-content-schedule-page {
+  padding-top: 0 !important;
+}
+
+.openy_carnation-based.virtual-ymca #gated-content .gated-content-schedule-page .date-filter {
+  position: sticky;
+  top: 200px;
+}
+.openy_carnation-based.virtual-ymca #gated-content .gated-content-schedule-page .calendar .slot.dates {
+  position: static;
+}
+
+@media (max-width: 991px) {
+  #openy_alerts_app_header {
+    margin-top: 189px;
+  }
+}

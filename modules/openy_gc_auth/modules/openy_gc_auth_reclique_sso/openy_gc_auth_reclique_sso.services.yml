@@ -1,4 +1,9 @@
 services:
+  openy_gc_auth.reclique_sso_user_login_subscriber:
+    class: '\Drupal\openy_gc_auth_reclique_sso\EventSubscriber\GCAuthReCliqueSSOUserLoginSubscriber'
+    arguments: [ '@config.factory' ]
+    tags:
+      - { name: 'event_subscriber' }
   openy_gc_auth.reclique_sso_client:
     class: Drupal\openy_gc_auth_reclique_sso\SSOClient
     arguments: ['@logger.factory', '@config.factory', '@http_client', '@csrf_token', '@tempstore.private' ]

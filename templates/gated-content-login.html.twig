@@ -1,0 +1,20 @@
+{#
+/**
+ * @file
+ * Default implementation for Gated Content Login template.
+ *
+ * Available variables:
+ * - auth_form: renderable array of the authentication form.
+ */
+#}
+
+{{ attach_library('openy_gated_content/gated-content-styles') }}
+
+<div id="gated-content">
+  <div class="login">
+    <h2 class="title">{{ 'Sign In'|t }}</h2>
+    <div class="container">
+      {{ auth_form }}
+    </div>
+  </div>
+</div>

@@ -2,7 +2,7 @@
 
 Virtual Y is a package for Open Y and consists of features, needed to organize gated content for Y clients.
 
-Active development is currently happening at [YUSA fork](https://github.com/YCloudYUSA/yusaopeny_gated_content). Pull requests should be submitted there. They will be pulled into this repo as they are reviewed and released.
+Active development is currently happening at [YUSA fork](https://github.com/YCloudYUSA/yusayusaopeny_gated_content). Pull requests should be submitted there. They will be pulled into this repo as they are reviewed and released.
 
 ## Server requirements
 In order to work Virtual Y requires HTTP server to allow
@@ -13,20 +13,20 @@ http methods.
 
 ## Submodules
 
-1. [Authentication system](https://github.com/ymcatwincities/openy_gated_content/tree/master/modules/openy_gc_auth) - pluginable system for different authentication types.
-2. [Demo](https://github.com/ymcatwincities/openy_gated_content/tree/master/modules/openy_gc_demo) - set of migrations that installs Demo content at the initial step of your Virtual Y
-3. [Storage](https://github.com/ymcatwincities/openy_gated_content/tree/master/modules/openy_gc_storage) - set of entities, needed for Virtual Y
-4. [Log](https://github.com/ymcatwincities/openy_gated_content/tree/master/modules/openy_gc_log) Features for tracking activities of your Virtual Y users.
-5. [Shared content](https://github.com/ymcatwincities/openy_gated_content/tree/master/modules/openy_gc_shared_content) - module that give's you ability to download content from shared network.
-6. [Shared content server](https://github.com/ymcatwincities/openy_gated_content/tree/master/modules/openy_gc_shared_content_server) - module for shared.openy.org server.
+1. [Authentication system](https://github.com/YCloudYUSA/yusaopeny_gated_content/tree/master/modules/openy_gc_auth) - plugin system for different authentication types.
+2. [Demo](https://github.com/YCloudYUSA/yusaopeny_gated_content/tree/master/modules/openy_gc_demo) - set of migrations that installs Demo content at the initial step of your Virtual Y
+3. [Storage](https://github.com/YCloudYUSA/yusaopeny_gated_content/tree/master/modules/openy_gc_storage) - set of entities, needed for Virtual Y
+4. [Log](https://github.com/YCloudYUSA/yusaopeny_gated_content/tree/master/modules/openy_gc_log) Features for tracking activities of your Virtual Y users.
+5. [Shared content](https://github.com/YCloudYUSA/yusaopeny_gated_content/tree/master/modules/openy_gc_shared_content) - module that give's you ability to download content from shared network.
+6. [Shared content server](https://github.com/YCloudYUSA/yusaopeny_gated_content/tree/master/modules/openy_gc_shared_content_server) - module for shared.openy.org server.
 
 ## Installation
 
-See also the [video version of these instructions](https://youtu.be/vlqv4ly3iak). This assumes you've already [built an Open Y site](https://github.com/ymcatwincities/openy-project#installation) and have it
+See also the [video version of these instructions](https://youtu.be/vlqv4ly3iak). This assumes you've already [built an Open Y site](https://github.com/YCloudYUSA/yusaopeny-project#installation) and have it
  running.
 
 - Add this module to your codebase.
-  - via composer: `composer require ymcatwincities/openy_gated_content`
+  - via composer: `composer require ycloudyusa/yusaopeny_gated_content`
   - without composer: this is not recommended.
 - Enable the modules
    - Through the UI:
@@ -34,8 +34,7 @@ See also the [video version of these instructions](https://youtu.be/vlqv4ly3iak)
      - Check "Virtual Y Base", "Open Y Virtual YMCA Storage", and "Open Y
       Virtual YMCA Auth Example".
       - Install and say "yes" to add all required dependencies.
-   - Via drush: `drush en openy_gated_content
-    openy_gc_auth_example -y`
+   - Via drush: `drush en openy_gated_content openy_gc_auth_example -y`
 - Add at least one term in these vocabularies via **Structure** > **Taxonomies**
   - Virtual Y Category
   - Virtual Y Equipment
@@ -123,9 +122,9 @@ mkdir vymca
 cd vymca
 git clone --branch openy-gc-builds \
   git@github.com:fivejars/docksal-for-openy.git .docksal
-git clone git@github.com:fivejars/openy_gated_content.git
+git clone git@github.com:fivejars/yusaopeny_gated_content.git
 mkdir -p docroot/libraries docroot/sites/default/config/staging
-wget -N https://raw.githubusercontent.com/fivejars/openy-project/8.2.x-gated-content-ci/composer.json
+wget -N https://raw.githubusercontent.com/fivejars/yusaopeny-project/8.2.x-gated-content-ci/composer.json
 docker volume create --name=composer_cache
 fin init
 ```

@@ -2,7 +2,7 @@
 
 namespace Drupal\openy_gc_log\Field;
 
-use Drupal\Core\Field\FieldItemList;
+use Drupal\Core\Field\EntityReferenceFieldItemList;
 use Drupal\Core\TypedData\ComputedItemListTrait;
 use Drupal\Core\TypedData\DataDefinitionInterface;
 use Drupal\Core\TypedData\TypedDataInterface;
@@ -16,7 +16,7 @@ use Drupal\openy_gc_log\Entity\LogEntityInterface;
  *
  * @package Drupal\openy_gc_log\Field
  */
-class PayloadFieldItemList extends FieldItemList {
+class PayloadFieldItemList extends EntityReferenceFieldItemList {
 
   use ComputedItemListTrait;
 

@@ -3,6 +3,7 @@ openy_gc_autologout:
   js:
     js/idle.min.js: {}
     js/openy_gc_autologout.js: {}
+    https://player.vimeo.com/api/player.js: {}
   dependencies:
     - core/jquery
     - core/drupalSettings

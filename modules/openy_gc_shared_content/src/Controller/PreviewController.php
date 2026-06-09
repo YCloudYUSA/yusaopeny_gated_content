@@ -71,7 +71,7 @@ class PreviewController extends ControllerBase {
       $this->currentUser()->id(),
       $shared_content_source_server->id() . '_previewed'
     );
-    if (!in_array($uuid, $previewed)) {
+    if (is_array($previewed) && !in_array($uuid, $previewed)) {
       $previewed[] = $uuid;
     }
     $this->userData->set('openy_gc_shared_content',

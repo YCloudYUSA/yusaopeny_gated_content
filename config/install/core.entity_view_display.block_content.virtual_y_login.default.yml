@@ -1,0 +1,23 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - block_content.type.virtual_y_login
+    - field.field.block_content.virtual_y_login.field_virtual_y_login
+  module:
+    - plugin
+id: block_content.virtual_y_login.default
+targetEntityType: block_content
+bundle: virtual_y_login
+mode: default
+content:
+  field_virtual_y_login:
+    type: plugin_block_built
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  langcode: true
+  search_api_excerpt: true

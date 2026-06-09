@@ -2,9 +2,8 @@ name: Daxko Virtual YMCA integration
 type: module
 description: 'Daxko integration for Virtual YMCA'
 package: Open Y Virtual YMCA
-version: 0.1
-core: 8.x
-core_version_requirement: ^8 || ^9
+version: 1.7.1
+core_version_requirement: ^8 || ^9 || ^10
 dependencies:
   - drupal:daxko_sso
   - drupal:openy_gc_auth

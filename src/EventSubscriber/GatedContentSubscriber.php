@@ -90,7 +90,7 @@ class GatedContentSubscriber implements EventSubscriberInterface {
    *   The event to process.
    */
   public function onRespond(ResponseEvent $event) {
-    if (!$event->isMasterRequest() || !$this->currentUser->isAnonymous()) {
+    if (!$event->isMainRequest() || !$this->currentUser->isAnonymous()) {
       return;
     }
 

@@ -6,6 +6,7 @@ use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Datetime\DrupalDateTime;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\openy_gated_content\VirtualYAccessTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -34,19 +35,30 @@ class EventsController extends ControllerBase {
   protected $moduleHandler;
 
   /**
+   * The entity type handler.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
    * The controller constructor.
    *
    * @param \Drupal\Core\Database\Connection $connection
    *   The database connection.
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
    *   The module handler.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager.
    */
   public function __construct(
     Connection $connection,
-    ModuleHandlerInterface $module_handler
+    ModuleHandlerInterface $module_handler,
+    EntityTypeManagerInterface $entity_type_manager
   ) {
     $this->connection = $connection;
     $this->moduleHandler = $module_handler;
+    $this->entityTypeManager = $entity_type_manager;
   }
 
   /**
@@ -55,7 +67,8 @@ class EventsController extends ControllerBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('database'),
-      $container->get('module_handler')
+      $container->get('module_handler'),
+      $container->get('entity_type.manager')
     );
   }
 
@@ -194,6 +207,7 @@ class EventsController extends ControllerBase {
         'uuid' => $item['uuid'],
         'title' => $item['field_ls_title_value'] ?: $item['title'],
         'host_name' => $item['field_ls_host_name_value'] ?: $item['esh_field_ls_host_name_value'],
+        'instructors' => $this->getInheritedFieldLabels($item['id'], 'field_gc_instructor_reference'),
         'date' => [
           'value' => (new DrupalDateTime($item['date__value'], $timezone))->format('c'),
           'end_value' => (new DrupalDateTime($item['date__end_value'], $timezone))->format('c'),
@@ -201,6 +215,41 @@ class EventsController extends ControllerBase {
       ];
     }
     return $instances;
+  }
+
+  /**
+   * Calculated an inherited field from an event instance due to calculated
+   * field issues: https://www.drupal.org/project/drupal/issues/2962457
+   *
+   * @param int $id
+   *    The event instance entity id.
+   * @param string $field
+   *    The field to fetch from the event instance/series.
+   * @return array
+   */
+  public function getInheritedFieldLabels(int $id, string $field): array
+  {
+    // Get the field values from the parent series.
+    $series_values = $this->entityTypeManager
+      ->getStorage('eventinstance')
+      ->load($id)
+      ->eventseries_id
+      ->entity
+      ->{$field}
+      ->referencedEntities();
+    // Get the field values from the instance.
+    $instance_values = $this->entityTypeManager
+      ->getStorage('eventinstance')
+      ->load($id)
+      ->{$field}
+      ->referencedEntities();
+    // If the instance has the field set, use that instead of the series.
+    $values = !empty($instance_values) ? $instance_values : $series_values;
+    // Reduce the array from Term objects to just the label strings we need.
+    array_walk($values, function (&$i) {
+      $i = $i->label();
+    });
+    return $values;
   }
 
 }

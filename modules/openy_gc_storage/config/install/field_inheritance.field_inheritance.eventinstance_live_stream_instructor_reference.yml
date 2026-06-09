@@ -10,4 +10,4 @@ sourceEntityBundle: live_stream
 destinationEntityBundle: live_stream
 sourceField: field_gc_instructor_reference
 destinationField: field_gc_instructor_reference
-plugin: default_inheritance
+plugin: entity_reference_inheritance

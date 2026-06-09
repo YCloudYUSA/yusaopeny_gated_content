@@ -1,0 +1,7 @@
+langcode: en
+status: true
+dependencies: {  }
+id: virtual_y_login
+label: 'Virtual Y Login'
+revision: 0
+description: 'A block to display Virtual Y Login.'

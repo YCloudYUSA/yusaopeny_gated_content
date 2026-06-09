@@ -63,10 +63,14 @@ class TryAgainForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    if (!empty($this->currentRequest->query->get('error'))) {
-      $form['error'] = [
-        '#markup' => '<h4 class="alert alert-danger text-center">' . $this->t('There may be a problem with your account') . '</h4>',
-      ];
+    $error = $this->currentRequest->query->get('error');
+    if (!empty($error)) {
+      if ($message = $this->configFactory->get('openy_gc_auth.provider.reclique_sso')
+        ->get("error_{$error}")) {
+        $form['error'] = [
+          '#markup' => '<h4 class="alert alert-danger text-center">' . $message . '</h4>',
+        ];
+      }
 
       $form['error_contact_message'] = [
         '#markup' => '<div class="alert alert-info text-center">' . $this->configFactory->get('openy_gc_auth.provider.reclique_sso')

@@ -41,9 +41,6 @@
 .openy_lily-based.openy-gated-content.toolbar-fixed #gated-content .calendar .desktop .slot.dates {
   top: 370px !important;
 }
-.openy_lily-based.openy-gated-content .layout-content #gated-content .gated-content-schedule-page {
-  padding-top: 86px !important;
-}
 .openy_lily-based.openy-gated-content.alerts #gated-content .gated-content-schedule-page,
 .openy_lily-based.openy-gated-content.alerts #gated-content .gated-content-favorites-page,
 .openy_lily-based.openy-gated-content.alerts #gated-content .gated-content-categories-page,
@@ -99,5 +96,8 @@
   }
   .openy_lily-based.openy-gated-content.toolbar-fixed .page-head.tiny .primary_menu {
     margin-top: 54px;
+  }
+  .openy_lily-based.openy-gated-content .layout-content #gated-content .gated-content-schedule-page {
+    padding-top: 86px !important;
   }
 }

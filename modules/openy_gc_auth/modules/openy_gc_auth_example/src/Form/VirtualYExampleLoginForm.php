@@ -2,6 +2,7 @@
 
 namespace Drupal\openy_gc_auth_example\Form;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\openy_gc_auth\GCUserAuthorizer;
@@ -30,14 +31,23 @@ class VirtualYExampleLoginForm extends FormBase {
   protected $gcUserAuthorizer;
 
   /**
+   * The config factory.
+   *
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  protected $configFactory;
+
+  /**
    * {@inheritdoc}
    */
   public function __construct(
     RequestStack $requestStack,
-    GCUserAuthorizer $gcUserAuthorizer
+    GCUserAuthorizer $gcUserAuthorizer,
+    ConfigFactoryInterface $config_factory
   ) {
     $this->currentRequest = $requestStack->getCurrentRequest();
     $this->gcUserAuthorizer = $gcUserAuthorizer;
+    $this->configFactory = $config_factory;
   }
 
   /**
@@ -46,7 +56,8 @@ class VirtualYExampleLoginForm extends FormBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('request_stack'),
-      $container->get('openy_gc_auth.user_authorizer')
+      $container->get('openy_gc_auth.user_authorizer'),
+      $container->get('config.factory')
     );
   }
 
@@ -61,10 +72,20 @@ class VirtualYExampleLoginForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
+    $provider_config = $this->configFactory->get('openy_gc_auth.provider.dummy');
+    $autosubmit = $provider_config->get('autosubmit');
 
     $form['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Enter Virtual Y'),
+      '#attached' => [
+        'library' => [
+          'openy_gc_auth_example/openy_gc_auth_example'
+        ]
+      ],
+      '#attributes' => [
+        'data-autosubmit' => $autosubmit,
+      ]
     ];
 
     return $form;

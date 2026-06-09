@@ -1,5 +1,11 @@
 authorization_server: 'https://[association_slug].recliquecore.com'
 client_id: ''
 client_secret: ''
+error_access_denied: 'That user does not have access to Virtual Y.'
 error_accompanying_message: 'Please contact us if you have any questions.'
+error_invalid: 'Something went wrong.'
+error_not_found: 'That user was not found.'
 login_mode: 'present_login_button'
+membership_field: 'PackageName'
+permissions_mapping: ''
+require_active: 1

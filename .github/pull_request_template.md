@@ -1,12 +1,9 @@
-Do not merge PR, only review it and approve/request changes.
-Merge is allowed by QA Engineer only.
-
 **Related Issue/Ticket:**
 
 **PLEASE CHECK BASE BRANCH FOR YOUR PR**
 **ONLY urgent and approved fixes for point release should go to master branch**
 
-(Replace this line with a link to the related GitHub issue on [ymcatwincities/openy_gated_content](https://github.com/ymcatwincities/openy_gated_content/issues) or your own ticketing system)
+(Replace this line with a link to the related GitHub issue on [YCloudYUSA/yusaopeny_gated_content](https://github.com/YCloudYUSA/yusaopeny_gated_content/issues) or your own ticketing system)
 
 ## Steps to test:
 

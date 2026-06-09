@@ -40,7 +40,7 @@ export const FilterAndSortMixin = {
           title_desc: { path: 'eventseries_id.title', direction: 'DESC' },
         },
         taxonomy_term: {
-          date_desc: { path: 'weight', direction: 'DESC' },
+          date_desc: { path: 'weight', direction: 'ASC' },
           date_asc: { path: 'weight', direction: 'ASC' },
           title_asc: { path: 'name', direction: 'ASC' },
           title_desc: { path: 'name', direction: 'DESC' },

@@ -103,7 +103,10 @@ class VirtualYLoginBlock extends BlockBase implements ContainerFactoryPluginInte
     // phpcs:enable
 
     $form['#attached']['library'][] = 'openy_gc_auth/auth_destination';
-    return $form;
+    return [
+      '#theme' => 'gated_content_login',
+      '#auth_form' => $form,
+    ];
   }
 
 }

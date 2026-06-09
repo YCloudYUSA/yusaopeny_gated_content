@@ -57,6 +57,7 @@ class DaxkoSSO extends GCIdentityProviderPluginBase {
     return [
       'redirect_url' => '',
       'login_mode' => 'present_login_button',
+      'update_daxko_url_whitelist' => FALSE,
     ];
   }
 
@@ -141,6 +142,32 @@ class DaxkoSSO extends GCIdentityProviderPluginBase {
       '#description' => $this->t('Record each user login as a Virtual Branch Check In.'),
     ];
 
+    $baseUrl = $this->request->getSchemeAndHttpHost();
+
+    $form['update_daxko_url_whitelist'] = [
+      '#title' => $this->t('Update Daxko URL whitelist.'),
+      '#type' => 'checkbox',
+      '#default_value' => $config['update_daxko_url_whitelist'],
+      '#description' => $this->t('After confirming this update the redirect URL on the Daxko API side will change to <b>@url.</b>',
+        [
+          '@url' => $baseUrl . $config['redirect_url']
+        ]),
+    ];
+
+    $form['actions']['submit']['submit_update_daxko_url_whitelist'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('Confirm Update'),
+      '#states' => [
+        'visible' => [
+          ':input[name="update_daxko_url_whitelist"]' => ['checked' => TRUE],
+        ],
+      ],
+      '#attributes' => [
+        'class' => ['form-item'],
+      ],
+      '#submit' => [[$this, 'updateDaxkoWhiteListUrlSubmit']],
+    ];
+
     return $form;
   }
 
@@ -153,6 +180,15 @@ class DaxkoSSO extends GCIdentityProviderPluginBase {
       $this->configuration['error_accompanying_message'] = $form_state->getValue('error_accompanying_message');
       $this->configuration['login_mode'] = $form_state->getValue('login_mode');
       $this->configuration['virtual_branch_check_in'] = $form_state->getValue('virtual_branch_check_in');
+      parent::submitConfigurationForm($form, $form_state);
+    }
+  }
+
+  /**
+   * Custom submit handler to update Daxko White List URI.
+   */
+  public function updateDaxkoWhiteListUrlSubmit(array &$form, FormStateInterface $form_state) {
+    if (!$form_state->getErrors()) {
 
       $baseUrl = $this->request->getSchemeAndHttpHost();
 
@@ -166,7 +202,6 @@ class DaxkoSSO extends GCIdentityProviderPluginBase {
       else {
         $this->messenger()->addError('Attempt to register redirect url was failed. ' . $result['message']);
       }
-      parent::submitConfigurationForm($form, $form_state);
     }
   }
 

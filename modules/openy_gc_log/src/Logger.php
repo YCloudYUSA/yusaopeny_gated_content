@@ -153,13 +153,13 @@ class Logger {
       case 'node':
         $metadata['entity_title'] = $entity->label();
         if ($log->get('entity_bundle')->value === 'gc_video') {
-          $metadata['entity_instructor_name'] = $entity->get('field_gc_video_instructor')->value;
+          $metadata['entity_instructor_name'] = $this->getListOfInstructors($entity);
         }
         break;
 
       case 'eventinstance':
         $metadata['entity_title'] = $entity->get('field_ls_title')->value ?: $entity->get('title')->value;
-        $metadata['entity_instructor_name'] = $entity->get('field_ls_host_name')->value ?: $entity->get('host_name')->value;
+        $metadata['entity_instructor_name'] = $this->getListOfInstructors($entity);
         break;
 
       case 'personal_training':
@@ -173,6 +173,25 @@ class Logger {
     $metadata['entity_created'] = date('m/d/Y - H:i:s', $entity->getCreatedTime());
 
     return $metadata;
+  }
+
+  /**
+   * Prepares a list of instructors.
+   *
+   * @param \Drupal\Core\Entity\EntityInterface $entity
+   *   An entity of Event Series.
+   *
+   * @return string
+   *   A string with instructors names separated by comma.
+   */
+  private function getListOfInstructors(EntityInterface $entity): string {
+    $instructors = [];
+    if (!empty($entity->field_gc_instructor_reference->getvalue())) {
+      foreach ($entity->get('field_gc_instructor_reference')->referencedEntities() as $instructorValue) {
+        $instructors[] = $instructorValue->get('name')->getvalue()[0]['value'];
+      }
+    }
+    return implode(", ", $instructors);
   }
 
 }

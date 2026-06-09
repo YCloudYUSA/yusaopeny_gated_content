@@ -1,1 +1,3 @@
 activity_granularity_interval: 600
+archiver_enabled: true
+archiver_store_period: '1 year'

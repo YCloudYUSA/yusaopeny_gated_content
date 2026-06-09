@@ -99,7 +99,6 @@ class VirtualYLoginRedirect implements EventSubscriberInterface {
    *   The event triggered by the response.
    */
   public function checkForRedirect(KernelEvent $event) {
-
     $route_name = $this->currentRouteMatch->getRouteName();
     $config = $this->configFactory->get('openy_gated_content.settings');
 
@@ -107,12 +106,11 @@ class VirtualYLoginRedirect implements EventSubscriberInterface {
       case 'entity.node.canonical':
         /** @var \Drupal\node\NodeInterface $node */
         $node = $this->currentRouteMatch->getParameter('node');
-
         $currentUser = $this->currentUser;
 
         if (
           $currentUser->isAnonymous()
-          && $this->authManager->checkIfParagraphAtNode($node, 'gated_content')
+          && $this->authManager->gatedContentExists($node)
         ) {
           if (!empty($config->get('virtual_y_login_url'))) {
             $event->setResponse(new RedirectResponse($config->get('virtual_y_login_url')));
@@ -135,8 +133,24 @@ class VirtualYLoginRedirect implements EventSubscriberInterface {
 
         if (
           $currentUser->isAuthenticated()
-          && $this->authManager->checkIfParagraphAtNode($node, 'gated_content_login')
+          && $this->authManager->gatedContentLoginExists($node)
         ) {
+
+          if (
+            $node->hasField('layout_builder__layout')
+            // Check if current user has either administrator or virtual_ymca_editor
+            // role.
+            && count(array_intersect(
+              $currentUser->getRoles(),
+              ['administrator', 'virtual_ymca_editor']
+            )) >= 1
+          ) {
+            // We don't want to redirect the user from page with Virtual Y Login
+            // if he uses Layout Builder, since he has to be able to change the
+            // Layout via local tasks tabs.
+            return;
+          }
+
           if (!empty($config->get('virtual_y_url'))) {
             $event->setResponse(new RedirectResponse($config->get('virtual_y_url')));
           }
@@ -155,7 +169,6 @@ class VirtualYLoginRedirect implements EventSubscriberInterface {
             ]));
           }
         }
-
     }
   }
 

@@ -1,0 +1,35 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - block_content.type.virtual_y_login
+    - field.field.block_content.virtual_y_login.field_virtual_y_login
+  module:
+    - plugin
+id: block_content.virtual_y_login.default
+targetEntityType: block_content
+bundle: virtual_y_login
+mode: default
+content:
+  field_virtual_y_login:
+    type: 'plugin_selector:plugin_select_list'
+    weight: 26
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  info:
+    type: string_textfield
+    weight: -5
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  langcode:
+    type: language_select
+    weight: 2
+    region: content
+    settings:
+      include_locked: true
+    third_party_settings: {  }
+hidden: {  }

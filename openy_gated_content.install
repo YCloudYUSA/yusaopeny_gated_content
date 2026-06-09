@@ -40,6 +40,15 @@ function openy_gated_content_update_dependencies() {
     8022 => [
       'openy_txnm_color' => 8005,
     ],
+    8026 => [
+      'openy' => 8093,
+    ]
+  ];
+
+  $dependencies['openy'] = [
+    8093 => [
+      'recurring_events' => 8012,
+    ]
   ];
 
   return $dependencies;
@@ -523,4 +532,41 @@ function openy_gated_content_update_8025() {
   foreach ($components as $id) {
     $config_updater->update($config, $config_name, "menu_config.$id");
   }
+}
+
+/**
+ * Create "Virtual Y" & "Virtual Y Login" blocks to be used for Layout Builder.
+ */
+function openy_gated_content_update_8026() {
+  $config_dir = \Drupal::service('extension.list.module')->getPath('openy_gated_content');
+  $config_dir .= '/config/install/';
+  $config_importer = \Drupal::service('openy_upgrade_tool.importer');
+  $config_importer->setDirectory($config_dir);
+  $config_importer->importConfigs([
+    'block_content.type.virtual_y_app',
+    'block_content.type.virtual_y_login',
+    'field.storage.block_content.field_virtual_y',
+    'field.storage.block_content.field_virtual_y_login',
+    'field.field.block_content.virtual_y_app.field_virtual_y',
+    'field.field.block_content.virtual_y_login.field_virtual_y_login',
+    'core.entity_form_display.block_content.virtual_y_app.default',
+    'core.entity_form_display.block_content.virtual_y_login.default',
+    'core.entity_view_display.block_content.virtual_y_app.default',
+    'core.entity_view_display.block_content.virtual_y_login.default',
+  ]);
+}
+
+/**
+ * Update "Virtual Y" & "Virtual Y Login" blocks to be used in Layout Builder.
+ */
+function openy_gated_content_update_8027() {
+  $config_dir = \Drupal::service('extension.list.module')->getPath('openy_gated_content');
+  $config_dir .= '/config/install/';
+  $config_importer = \Drupal::service('openy_upgrade_tool.importer');
+  $config_importer->setDirectory($config_dir);
+  $config_importer->importConfigs([
+    'field.field.block_content.virtual_y_login.field_virtual_y_login',
+    'core.entity_view_display.block_content.virtual_y_app.default',
+    'core.entity_view_display.block_content.virtual_y_login.default',
+  ]);
 }

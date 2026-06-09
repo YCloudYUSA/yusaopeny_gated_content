@@ -18,7 +18,14 @@
       </div>
       <div
         class="instructor"
-        v-if="this.video.attributes.host_name"
+        v-if="this.instructors"
+      >
+        <SvgIcon icon="instructor-icon"></SvgIcon>
+        {{ this.instructors.map(instructor => instructor.name).join(', ') }}
+      </div>
+      <div
+        class="instructor"
+        v-else-if="this.video.attributes.host_name"
       >
         <SvgIcon icon="instructor-icon"></SvgIcon>
         {{ this.video.attributes.host_name }}
@@ -76,6 +83,11 @@ export default {
     image() {
       return this.video.attributes['field_ls_image.field_media_image']
         ?? this.video.attributes['image.field_media_image'];
+    },
+    instructors() {
+      return this.video.attributes.field_gc_instructor_reference.length
+        ? this.video.attributes.field_gc_instructor_reference
+        : this.video.attributes.instructor;
     },
     level() {
       return this.video.attributes.field_ls_level ?? this.video.attributes.level;

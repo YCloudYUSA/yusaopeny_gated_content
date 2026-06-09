@@ -1,0 +1,36 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - block_content.type.virtual_y_app
+    - field.storage.block_content.field_virtual_y
+  module:
+    - plugin
+id: block_content.virtual_y_app.field_virtual_y
+field_name: field_virtual_y
+entity_type: block_content
+bundle: virtual_y_app
+label: 'Virtual Y'
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    plugin_id: virtual_y_app
+    plugin_configuration:
+      id: virtual_y_app
+      label: 'Virtual Y App'
+      label_display: '0'
+      provider: openy_gated_content
+      title: 'Virtual YMCA'
+      description:
+        value: "<p>Find the newest Y classes and programs</p>\r\n\r\n<p><a class=\"btn btn-primary\" href=\"#/live-stream\"><span class=\"text\">Live Streams</span></a>&nbsp; <a class=\"btn btn-primary\" href=\"#/categories/video\"><span class=\"text\">Videos</span></a></p>\r\n"
+        format: full_html
+      background_image: ''
+      link:
+        uri: ''
+        title: ''
+    plugin_configuration_schema_id: block.settings.virtual_y_app
+default_value_callback: ''
+settings: {  }
+field_type: 'plugin:block'

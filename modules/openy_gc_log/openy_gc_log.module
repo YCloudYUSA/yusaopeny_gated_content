@@ -36,9 +36,12 @@ function openy_gc_log_preprocess_views_view(array &$variables) {
  * Implements hook_cron().
  */
 function openy_gc_log_cron() {
-  $archiver = \Drupal::service("openy_gc_log.log_archiver");
-  $archiver->setWorkerChunkSize(600);
-  $archiver->archive();
+  $enabled = \Drupal::config('openy_gc_log.settings')->get('archiver_enabled');
+  if ($enabled) {
+    $archiver = \Drupal::service("openy_gc_log.log_archiver");
+    $archiver->setWorkerChunkSize(600);
+    $archiver->archive();
+  }
 }
 
 /**

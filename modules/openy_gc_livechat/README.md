@@ -27,6 +27,21 @@ Livechat features require running a chat daemon on your server. To install the c
 0 */4 * * * systemctl restart wssserver.service
 ```
 
+4. Enable service for it to start automatically after server reboot
+
+```sh
+systemctl enable wssserver.service
+```
+
+# Dev and containerized environments
+
+In order to run this service while developing or testing application, please run this command in background 
+
+```sh
+drush ev ‘\Drupal\openy_gc_livechat\GCSocketServer::run();’ &
+```
+Which will ensure socket service is up and running.
+
 # How it works
 
 To use this feature, enable `openy_gc_livechat` on your Virtual Y site. (Please, do not forget to configure the background daemon before that). Once you enable it, you can start using livechat on any Virtual Y Livestream page.

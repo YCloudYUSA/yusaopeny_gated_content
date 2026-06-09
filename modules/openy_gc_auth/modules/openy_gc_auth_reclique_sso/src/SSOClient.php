@@ -165,7 +165,29 @@ class SSOClient {
    *   Returns TRUE if user has active subscription.
    */
   public function validateUserSubscription($userData) {
-    return ($userData->member instanceof \stdClass) && $userData->member->Status === 'Active';
+    // If require_active then all we do is check that. Roles come later.
+    if ($this->configRecliqueSSO->get('require_active')) {
+      return ($userData->member instanceof \stdClass) && $userData->member->Status === 'Active';
+    }
+    else {
+      /** @var string $membership_field */
+      $membership_field = $this->configRecliqueSSO->get('membership_field');
+      $user_membership = $userData->member->{$membership_field};
+      $permissions_mapping = explode(';', $this->configRecliqueSSO->get('permissions_mapping'));
+      // Compare each pattern to the user's membership.
+      foreach ($permissions_mapping as $mapping) {
+        $role = explode(':', $mapping);
+        if (!empty($role[0]) && !empty($role[1])) {
+          $role_pattern = '/^(' . preg_replace('/[^\\\\](\*)/', '.*', $role[0]) . ')$/';
+          // If we hit a match the user can proceed, otherwise keep trying.
+          if (preg_match($role_pattern, $user_membership)) {
+            return true;
+          }
+        }
+      }
+      // If no mappings match then the user is not allowed.
+      return false;
+    }
   }
 
   /**

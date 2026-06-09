@@ -1,0 +1,14 @@
+{#
+/**
+ * @file
+ * Default implementation for Gated Content Application template.
+ *
+ * Available variables:
+ * - headline: renderable array of the authentication form.
+ * - app_settings: gated content application settings.
+ */
+#}
+{{ attach_library('openy_gated_content/gated-content-vue') }}
+<div id="gated-content">
+  <App settings="{{ app_settings }}" headline="{{ headline }}"/>
+</div>
