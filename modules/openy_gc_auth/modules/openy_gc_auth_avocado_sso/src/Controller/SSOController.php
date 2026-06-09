@@ -47,6 +47,13 @@ class SSOController extends ControllerBase {
   protected $avocadoSSOClient;
 
   /**
+   * The response.
+   *
+   * @var \Drupal\Core\Routing\TrustedRedirectResponse
+   */
+  protected $response;
+
+  /**
    * SSOController constructor.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
