@@ -570,3 +570,16 @@ function openy_gated_content_update_8027() {
     'core.entity_view_display.block_content.virtual_y_login.default',
   ]);
 }
+
+/**
+ * Add Custom Dashboard component and custom top menu button.
+ */
+function openy_gated_content_update_8028() {
+  $config_dir = \Drupal::service('extension.list.module')->getPath('openy_gated_content');
+  $config_dir .= '/config/install/';
+  $config_updater = \Drupal::service('openy_upgrade_tool.param_updater');
+  $config_name = 'openy_gated_content.settings';
+  $config = $config_dir . $config_name . '.yml';
+  $config_updater->update($config, $config_name, 'components.custom_dashboard');
+  $config_updater->update($config, $config_name, 'top_menu.custom_button');
+}

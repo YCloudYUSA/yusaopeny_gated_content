@@ -50,6 +50,19 @@
           <CategoriesIcon :color="fontColor"></CategoriesIcon>Categories
         </router-link>
       </div>
+      <div @click="menuOpen=false" v-if="customButtonEnabled">
+        <a
+          :href="customButtonUrl"
+          :style="fontStyleObject"
+        >
+          <img
+            v-if="customButtonIconUrl"
+            :src="customButtonIconUrl"
+            :alt="customButtonIconAlt"
+            class="custom-menu-icon"
+          />{{ customButtonText }}
+        </a>
+      </div>
       <div @click="menuOpen=false">
         <a
           href="/vy-user/logout"
@@ -118,6 +131,25 @@ export default {
           ? this.getAppSettings.top_menu.background_color_dark
           : this.getAppSettings.top_menu.background_color_light,
       };
+    },
+    customButton() {
+      return (this.getAppSettings && this.getAppSettings.top_menu
+        && this.getAppSettings.top_menu.custom_button) || {};
+    },
+    customButtonEnabled() {
+      return !!this.customButton.status;
+    },
+    customButtonText() {
+      return this.customButton.text || '';
+    },
+    customButtonUrl() {
+      return this.customButton.url || '';
+    },
+    customButtonIconUrl() {
+      return this.customButton.icon_path || '';
+    },
+    customButtonIconAlt() {
+      return this.customButton.icon_alt || '';
     },
   },
   methods: {

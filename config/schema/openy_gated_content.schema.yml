@@ -27,6 +27,22 @@ vy_component_settings:
       type: integer
       label: 'Component order'
 
+vy_custom_dashboard_settings:
+  type: config_object
+  mapping:
+    title:
+      type: string
+      label: 'Block title'
+    status:
+      type: boolean
+      label: 'Enable/Disable component'
+    weight:
+      type: integer
+      label: 'Component order'
+    content:
+      type: text_format
+      label: 'Custom HTML content'
+
 openy_gated_content.settings:
   type: config_object
   label: 'Open Y gated content settings'
@@ -77,3 +93,54 @@ openy_gated_content.settings:
         vy_blog_post:
           type: vy_component_settings
           label: 'Blog posts'
+        custom_dashboard:
+          type: vy_custom_dashboard_settings
+          label: 'Custom Dashboard'
+    top_menu:
+      type: mapping
+      label: 'Top menu settings'
+      mapping:
+        links_color_light:
+          type: string
+          label: 'Top menu links color (light)'
+        background_color_light:
+          type: string
+          label: 'Top menu background color (light)'
+        links_color_dark:
+          type: string
+          label: 'Top menu links color (dark)'
+        background_color_dark:
+          type: string
+          label: 'Top menu background color (dark)'
+        custom_button:
+          type: mapping
+          label: 'Custom top menu button'
+          mapping:
+            status:
+              type: boolean
+              label: 'Enable/Disable custom top menu button'
+            text:
+              type: string
+              label: 'Custom top menu button text'
+            url:
+              type: string
+              label: 'Custom top menu button URL'
+            icon_path:
+              type: string
+              label: 'Custom top menu button icon path'
+            icon_alt:
+              type: string
+              label: 'Custom top menu button icon alt text'
+    menu_config:
+      type: mapping
+      label: 'Top Items Visibility Settings'
+      mapping:
+        schedule:
+          type: boolean
+          label: 'Hide Schedule'
+        favorites:
+          type: boolean
+          label: 'Hide Favorites'
+        categories:
+          type: boolean
+          label: 'Hide Categories'
