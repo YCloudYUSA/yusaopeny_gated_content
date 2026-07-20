@@ -583,21 +583,3 @@ function openy_gated_content_update_8028() {
   $config_updater->update($config, $config_name, 'components.custom_dashboard');
   $config_updater->update($config, $config_name, 'top_menu.custom_button');
 }
-
-/**
- * Migrate Custom Dashboard content off the retired vy_custom_dashboard
- * format onto the platform's existing "code" format, and remove the
- * now-unused format.
- */
-function openy_gated_content_update_8029() {
-  $config = \Drupal::configFactory()->getEditable('openy_gated_content.settings');
-  if ($config->get('components.custom_dashboard.content.format') === 'vy_custom_dashboard') {
-    $config->set('components.custom_dashboard.content.format', 'code');
-    $config->save();
-  }
-
-  $format = \Drupal::entityTypeManager()->getStorage('filter_format')->load('vy_custom_dashboard');
-  if ($format) {
-    $format->delete();
-  }
-}
