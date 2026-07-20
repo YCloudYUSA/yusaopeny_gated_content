@@ -1,0 +1,7 @@
+langcode: en
+status: true
+dependencies: {  }
+name: 'Virtual Y Custom Dashboard'
+format: vy_custom_dashboard
+weight: 20
+filters: {  }

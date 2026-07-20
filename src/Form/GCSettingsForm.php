@@ -5,8 +5,11 @@ namespace Drupal\openy_gated_content\Form;
 use Drupal\Component\Plugin\PluginManagerInterface;
 use Drupal\Component\Utility\SortArray;
 use Drupal\Core\Config\Config;
+use Drupal\Core\File\FileSystemInterface;
+use Drupal\Core\File\FileUrlGeneratorInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\file\Entity\File;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -24,10 +27,30 @@ class GCSettingsForm extends ConfigFormBase {
   protected $identityProviderManager;
 
   /**
+   * The file system.
+   *
+   * @var \Drupal\Core\File\FileSystemInterface
+   */
+  protected $fileSystem;
+
+  /**
+   * The file URL generator.
+   *
+   * @var \Drupal\Core\File\FileUrlGeneratorInterface
+   */
+  protected $fileUrlGenerator;
+
+  /**
    * {@inheritdoc}
    */
-  public function __construct(PluginManagerInterface $gc_identity_provider_manager) {
+  public function __construct(
+    PluginManagerInterface $gc_identity_provider_manager,
+    FileSystemInterface $file_system,
+    FileUrlGeneratorInterface $file_url_generator
+  ) {
     $this->identityProviderManager = $gc_identity_provider_manager;
+    $this->fileSystem = $file_system;
+    $this->fileUrlGenerator = $file_url_generator;
   }
 
   /**
@@ -35,7 +58,9 @@ class GCSettingsForm extends ConfigFormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('plugin.manager.gc_identity_provider')
+      $container->get('plugin.manager.gc_identity_provider'),
+      $container->get('file_system'),
+      $container->get('file_url_generator')
     );
   }
 
@@ -150,6 +175,7 @@ class GCSettingsForm extends ConfigFormBase {
       ],
     ];
 
+    $this->customButtonSettings($form, $config);
     $this->menuVisibilitySettings($form, $config);
 
     $form['actions']['#type'] = 'actions';
@@ -160,6 +186,72 @@ class GCSettingsForm extends ConfigFormBase {
     ];
 
     return $form;
+  }
+
+  /**
+   * Helper method to add the custom top menu button settings.
+   *
+   * @param array $form
+   *   Array of the form configuration to attach the form elements to.
+   * @param \Drupal\Core\Config\Config $config
+   *   Virtual Y config object.
+   */
+  protected function customButtonSettings(array &$form, Config $config) {
+    $form['app_settings']['top_menu']['custom_button'] = [
+      '#type' => 'fieldset',
+      '#title' => $this->t('Custom top menu button'),
+
+      'status' => [
+        '#title' => $this->t('Enable custom top menu button'),
+        '#type' => 'checkbox',
+        '#default_value' => $config->get('top_menu.custom_button.status') ?? FALSE,
+      ],
+
+      'text' => [
+        '#type' => 'textfield',
+        '#title' => $this->t('Button text'),
+        '#default_value' => $config->get('top_menu.custom_button.text') ?? '',
+        '#states' => [
+          'required' => [
+            ':input[name="app_settings[top_menu][custom_button][status]"]' => ['checked' => TRUE],
+          ],
+        ],
+      ],
+
+      'url' => [
+        '#type' => 'textfield',
+        '#title' => $this->t('Button URL'),
+        '#description' => $this->t('An internal path or absolute URL for the button to link to.'),
+        '#default_value' => $config->get('top_menu.custom_button.url') ?? '',
+        '#states' => [
+          'required' => [
+            ':input[name="app_settings[top_menu][custom_button][status]"]' => ['checked' => TRUE],
+          ],
+        ],
+      ],
+
+      'icon_upload' => [
+        '#type' => 'managed_file',
+        '#title' => $this->t('Button icon'),
+        '#description' => $this->t('Upload an SVG or PNG icon for the button. Leave empty to keep the currently uploaded icon.'),
+        '#upload_location' => 'public://vy-custom-button/',
+        '#upload_validators' => [
+          'FileExtension' => ['extensions' => 'svg png jpg jpeg'],
+        ],
+      ],
+
+      'icon_alt' => [
+        '#type' => 'textfield',
+        '#title' => $this->t('Icon alt text'),
+        '#description' => $this->t('Accessible description of the icon. Required whenever the button is enabled.'),
+        '#default_value' => $config->get('top_menu.custom_button.icon_alt') ?? '',
+        '#states' => [
+          'required' => [
+            ':input[name="app_settings[top_menu][custom_button][status]"]' => ['checked' => TRUE],
+          ],
+        ],
+      ],
+    ];
   }
 
   /**
@@ -282,6 +374,48 @@ class GCSettingsForm extends ConfigFormBase {
         '#default_value' => $config->get('components.' . $id . '.empty_block_text') ?? '',
       ];
     }
+
+    $form['app_settings']['components_container']['components']['custom_dashboard'] = [
+      '#attributes' => [
+        'class' => ['draggable'],
+      ],
+      '#weight' => $config->get('components.custom_dashboard.weight'),
+      'component' => [
+        '#type' => 'details',
+        '#open' => FALSE,
+        '#title' => $this->t('Custom Dashboard'),
+      ],
+      'weight' => [
+        '#type' => 'weight',
+        '#default_value' => $config->get('components.custom_dashboard.weight'),
+        '#attributes' => [
+          'class' => ['weight'],
+        ],
+      ],
+    ];
+
+    $form['app_settings']['components_container']['components']['custom_dashboard']['component']['status'] = [
+      '#title' => $this->t('Show on the VY home page'),
+      '#description' => $this->t('Enable/Disable "Custom Dashboard" component.'),
+      '#type' => 'checkbox',
+      '#default_value' => $config->get('components.custom_dashboard.status') ?? FALSE,
+    ];
+
+    $form['app_settings']['components_container']['components']['custom_dashboard']['component']['title'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Block title'),
+      '#required' => TRUE,
+      '#default_value' => $config->get('components.custom_dashboard.title') ?? '',
+    ];
+
+    $form['app_settings']['components_container']['components']['custom_dashboard']['component']['content'] = [
+      '#type' => 'text_format',
+      '#title' => $this->t('Custom HTML content'),
+      '#description' => $this->t('Paste an embed/HTML snippet from a third-party service to display on the VY home page. Access to the "Virtual Y Custom Dashboard" text format should be restricted to trusted roles, as its content is rendered unfiltered.'),
+      '#default_value' => $config->get('components.custom_dashboard.content.value') ?? '',
+      '#format' => $config->get('components.custom_dashboard.content.format') ?? 'vy_custom_dashboard',
+      '#allowed_formats' => ['vy_custom_dashboard'],
+    ];
 
     uasort($form['app_settings']['components_container']['components'],
       [SortArray::class, 'sortByWeightProperty']);
@@ -441,6 +575,8 @@ class GCSettingsForm extends ConfigFormBase {
     $permissions = $settings->get('permissions_entities');
     $value = $form_state->getValue('app_settings');
 
+    $this->processCustomButtonIcon($value, $settings);
+
     // Extract components values from the tree.
     $components = $value['components_container']['components'];
     $components += $value['legacy_view_container']['legacy_view'];
@@ -456,6 +592,40 @@ class GCSettingsForm extends ConfigFormBase {
     $settings->set('permissions_entities', $permissions);
     $settings->save();
     parent::submitForm($form, $form_state);
+  }
+
+  /**
+   * Handles the custom top menu button icon upload.
+   *
+   * Config is not a good home for managed file entities (it isn't tracked
+   * as "in use" and would be deleted by file cleanup), so - mirroring core's
+   * theme logo upload handling in ThemeSettingsForm - the uploaded file is
+   * copied to a permanent public URI and only that URI string is stored.
+   *
+   * @param array $value
+   *   The submitted "app_settings" form values, passed by reference.
+   * @param \Drupal\Core\Config\Config $settings
+   *   The module's config object, used to preserve the existing icon path
+   *   when no new file was uploaded on this submission.
+   */
+  protected function processCustomButtonIcon(array &$value, Config $settings) {
+    $fids = $value['top_menu']['custom_button']['icon_upload'] ?? [];
+    unset($value['top_menu']['custom_button']['icon_upload']);
+
+    if (empty($fids)) {
+      $value['top_menu']['custom_button']['icon_path'] = $settings->get('top_menu.custom_button.icon_path') ?? '';
+      return;
+    }
+
+    $file = File::load(reset($fids));
+    if (!$file) {
+      $value['top_menu']['custom_button']['icon_path'] = '';
+      return;
+    }
+
+    $destination = 'public://vy-custom-button/' . $this->fileSystem->basename($file->getFileUri());
+    $uri = $this->fileSystem->copy($file->getFileUri(), $destination, FileSystemInterface::EXISTS_RENAME);
+    $value['top_menu']['custom_button']['icon_path'] = $this->fileUrlGenerator->generateString($uri);
   }
 
 }

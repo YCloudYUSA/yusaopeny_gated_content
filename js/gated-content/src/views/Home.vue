@@ -40,6 +40,11 @@
         :sort="sortData('node', 'gc_video')"
         v-if="isActive('latest_content') && showOnCurrentIteration('latest_content', component)"
       />
+      <CustomDashboard
+        :title="config.components.custom_dashboard.title"
+        :content="config.components.custom_dashboard.content.value"
+        v-if="isActive('custom_dashboard') && showOnCurrentIteration('custom_dashboard', component)"
+      />
     </div>
   </div>
 </template>
@@ -55,6 +60,7 @@ import PageHeader from '@/components/PageHeader.vue';
 import CategoriesListing from '@/components/category/CategoriesListing.vue';
 import DurationsListing from '@/components/duration/DurationsListing.vue';
 import InstructorsListing from '@/components/instructor/InstructorsListing.vue';
+import CustomDashboard from '@/components/custom-dashboard/CustomDashboard.vue';
 
 export default {
   name: 'Home',
@@ -67,6 +73,7 @@ export default {
     CategoriesListing,
     PersonalTrainingListing,
     ParagraphHeadline,
+    CustomDashboard,
   },
   computed: {
     ...mapGetters([

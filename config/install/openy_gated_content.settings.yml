@@ -52,6 +52,13 @@ components:
     default_sort: 'date_desc'
     show_covers: 0
     weight: 3
+  custom_dashboard:
+    status: false
+    title: 'Custom Dashboard'
+    weight: 4
+    content:
+      value: ''
+      format: vy_custom_dashboard
 virtual_y_url: /virtual-ymca
 virtual_y_login_url: /virtual-y-login
 virtual_y_logout_url: ''
@@ -70,6 +77,12 @@ top_menu:
   background_color_light: '#F2F2F2'
   links_color_dark: '#ffffff'
   background_color_dark: 'black'
+  custom_button:
+    status: false
+    text: ''
+    url: ''
+    icon_path: ''
+    icon_alt: ''
 menu_config:
   schedule: false
   favorites: false
