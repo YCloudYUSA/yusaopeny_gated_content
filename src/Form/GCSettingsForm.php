@@ -4,7 +4,9 @@ namespace Drupal\openy_gated_content\Form;
 
 use Drupal\Component\Plugin\PluginManagerInterface;
 use Drupal\Component\Utility\SortArray;
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Config\Config;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\File\FileUrlGeneratorInterface;
 use Drupal\Core\Form\ConfigFormBase;
@@ -18,6 +20,12 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class GCSettingsForm extends ConfigFormBase {
 
   const PAGER_LIMIT_DEFAULT = 12;
+
+  /**
+   * Max dimensions for the custom top menu button icon, matching the size
+   * the other top menu icons render at.
+   */
+  const CUSTOM_BUTTON_ICON_MAX_DIMENSIONS = '64x64';
 
   /**
    * The Identity Provider plugin manager.
@@ -41,16 +49,25 @@ class GCSettingsForm extends ConfigFormBase {
   protected $fileUrlGenerator;
 
   /**
+   * The entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
    * {@inheritdoc}
    */
   public function __construct(
     PluginManagerInterface $gc_identity_provider_manager,
     FileSystemInterface $file_system,
-    FileUrlGeneratorInterface $file_url_generator
+    FileUrlGeneratorInterface $file_url_generator,
+    EntityTypeManagerInterface $entity_type_manager
   ) {
     $this->identityProviderManager = $gc_identity_provider_manager;
     $this->fileSystem = $file_system;
     $this->fileUrlGenerator = $file_url_generator;
+    $this->entityTypeManager = $entity_type_manager;
   }
 
   /**
@@ -60,8 +77,22 @@ class GCSettingsForm extends ConfigFormBase {
     return new static(
       $container->get('plugin.manager.gc_identity_provider'),
       $container->get('file_system'),
-      $container->get('file_url_generator')
+      $container->get('file_url_generator'),
+      $container->get('entity_type.manager')
     );
+  }
+
+  /**
+   * Checks whether a text format exists.
+   *
+   * @param string $format_id
+   *   The filter format ID.
+   *
+   * @return bool
+   *   TRUE if the format exists.
+   */
+  protected function filterFormatExists(string $format_id): bool {
+    return (bool) $this->entityTypeManager->getStorage('filter_format')->load($format_id);
   }
 
   /**
@@ -233,10 +264,13 @@ class GCSettingsForm extends ConfigFormBase {
       'icon_upload' => [
         '#type' => 'managed_file',
         '#title' => $this->t('Button icon'),
-        '#description' => $this->t('Upload an SVG or PNG icon for the button. Leave empty to keep the currently uploaded icon.'),
+        '#description' => $this->t('Upload an SVG or PNG icon for the button, matching the size of the other top menu icons (max %dimensions). Leave empty to keep the currently uploaded icon.', [
+          '%dimensions' => self::CUSTOM_BUTTON_ICON_MAX_DIMENSIONS,
+        ]),
         '#upload_location' => 'public://vy-custom-button/',
         '#upload_validators' => [
           'FileExtension' => ['extensions' => 'svg png jpg jpeg'],
+          'FileImageDimensions' => ['maxDimensions' => self::CUSTOM_BUTTON_ICON_MAX_DIMENSIONS],
         ],
       ],
 
@@ -404,18 +438,20 @@ class GCSettingsForm extends ConfigFormBase {
     $form['app_settings']['components_container']['components']['custom_dashboard']['component']['title'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Block title'),
-      '#required' => TRUE,
+      '#description' => $this->t('Leave empty to hide the title.'),
       '#default_value' => $config->get('components.custom_dashboard.title') ?? '',
     ];
 
+    $content_format = $this->filterFormatExists('code') ? 'code' : NULL;
     $form['app_settings']['components_container']['components']['custom_dashboard']['component']['content'] = [
       '#type' => 'text_format',
       '#title' => $this->t('Custom HTML content'),
-      '#description' => $this->t('Paste an embed/HTML snippet from a third-party service to display on the VY home page. Access to the "Virtual Y Custom Dashboard" text format should be restricted to trusted roles, as its content is rendered unfiltered.'),
+      '#description' => $this->t('Paste an embed/HTML snippet from a third-party service to display on the VY home page. Access to the "%format" text format should be restricted to trusted roles, as its content is rendered unfiltered.', [
+        '%format' => $content_format ?? $this->t('Code'),
+      ]),
       '#default_value' => $config->get('components.custom_dashboard.content.value') ?? '',
-      '#format' => $config->get('components.custom_dashboard.content.format') ?? 'vy_custom_dashboard',
-      '#allowed_formats' => ['vy_custom_dashboard'],
-    ];
+      '#format' => $config->get('components.custom_dashboard.content.format') ?? $content_format,
+    ] + ($content_format ? ['#allowed_formats' => [$content_format]] : []);
 
     uasort($form['app_settings']['components_container']['components'],
       [SortArray::class, 'sortByWeightProperty']);
@@ -591,6 +627,10 @@ class GCSettingsForm extends ConfigFormBase {
     // Hard save for setting that is not present at form.
     $settings->set('permissions_entities', $permissions);
     $settings->save();
+    // Layout Builder inline blocks render this config through the Virtual Y
+    // app's bootstrap JSON, which doesn't always pick up the config save's
+    // own cache tag invalidation, so invalidate it explicitly here too.
+    Cache::invalidateTags(['config:openy_gated_content.settings']);
     parent::submitForm($form, $form_state);
   }
 

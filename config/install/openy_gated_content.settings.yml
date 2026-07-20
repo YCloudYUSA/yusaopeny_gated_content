@@ -58,7 +58,7 @@ components:
     weight: 4
     content:
       value: ''
-      format: vy_custom_dashboard
+      format: code
 virtual_y_url: /virtual-ymca
 virtual_y_login_url: /virtual-y-login
 virtual_y_logout_url: ''

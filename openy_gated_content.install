@@ -577,12 +577,6 @@ function openy_gated_content_update_8027() {
 function openy_gated_content_update_8028() {
   $config_dir = \Drupal::service('extension.list.module')->getPath('openy_gated_content');
   $config_dir .= '/config/install/';
-  $config_importer = \Drupal::service('openy_upgrade_tool.importer');
-  $config_importer->setDirectory($config_dir);
-  $config_importer->importConfigs([
-    'filter.format.vy_custom_dashboard',
-  ]);
-
   $config_updater = \Drupal::service('openy_upgrade_tool.param_updater');
   $config_name = 'openy_gated_content.settings';
   $config = $config_dir . $config_name . '.yml';
