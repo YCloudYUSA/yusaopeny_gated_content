@@ -68,8 +68,8 @@ class PeerController extends ControllerBase {
    * @throws \Drupal\Core\Entity\EntityStorageException
    */
   public function publishCustomerPeer(Request $request) {
-    $personalTrainingId = $request->get('trainingId');
-    $peerId = $request->get('peerId');
+    $personalTrainingId = $request->query->get('trainingId') ?? $request->request->get('trainingId');
+    $peerId = $request->query->get('peerId') ?? $request->request->get('peerId');
 
     if (empty($personalTrainingId) || empty($peerId)) {
       return new JsonResponse('Not enough data', 500);
@@ -111,7 +111,7 @@ class PeerController extends ControllerBase {
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   public function loadCustomerPeer(Request $request) {
-    $personalTrainingId = $request->get('trainingId');
+    $personalTrainingId = $request->query->get('trainingId') ?? $request->request->get('trainingId');
     if (empty($personalTrainingId)) {
       return new JsonResponse('Not enough data', 500);
     }

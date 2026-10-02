@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Config\Entity\ConfigEntityType;
+use Drupal\Core\Extension\Requirement\RequirementSeverity;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\openy_gc_personal_training\Entity\PersonalTraining;
@@ -52,7 +53,7 @@ function openy_gc_personal_training_requirements($phase) {
         'title' => t('State Machine Module'),
         'value' => t('Module is not installed.'),
         'description' => t('It is required for openy_gc_personal_training_update_8005. As state is being introduced to the Personal Training entity.'),
-        'severity' => REQUIREMENT_ERROR,
+        'severity' => class_exists(RequirementSeverity::class) ? RequirementSeverity::Error : REQUIREMENT_ERROR,
       ];
     }
   }

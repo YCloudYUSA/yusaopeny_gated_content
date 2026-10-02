@@ -136,7 +136,7 @@ class Logger {
       'series' => 'eventinstance',
       'personal_training' => 'personal_training',
     ];
-    if (!array_key_exists($entity_type, $entity_type_ids)) {
+    if ($entity_type === NULL || !array_key_exists($entity_type, $entity_type_ids)) {
       return $metadata;
     }
     $entity_type_id = $entity_type_ids[$entity_type];

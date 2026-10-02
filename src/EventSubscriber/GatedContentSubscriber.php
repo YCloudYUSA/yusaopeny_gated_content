@@ -41,7 +41,7 @@ class GatedContentSubscriber implements EventSubscriberInterface {
    */
   public function accessCheck(RequestEvent $event) {
     $request = $event->getRequest();
-    $route_name = $request->get('_route');
+    $route_name = $request->attributes->get('_route');
     $protected_routes = [
       'entity.node.canonical',
       'entity.eventseries.canonical',
@@ -55,15 +55,15 @@ class GatedContentSubscriber implements EventSubscriberInterface {
     $route_object = NULL;
     switch ($route_name) {
       case 'entity.node.canonical':
-        $route_object = $request->get('node');
+        $route_object = $request->attributes->get('node');
         break;
 
       case 'entity.eventseries.canonical':
-        $route_object = $request->get('eventseries');
+        $route_object = $request->attributes->get('eventseries');
         break;
 
       case 'entity.eventinstance.canonical':
-        $route_object = $request->get('eventinstance');
+        $route_object = $request->attributes->get('eventinstance');
         break;
     }
 
