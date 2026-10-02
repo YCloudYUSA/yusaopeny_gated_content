@@ -4,7 +4,7 @@ namespace Drupal\openy_gc_shared_content_server;
 
 use Drupal\Component\Plugin\Derivative\DeriverBase;
 use Drupal\Component\Plugin\Derivative\DeriverInterface;
-use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Plugin\Discovery\ContainerDeriverInterface;
 use Drupal\openy_gc_shared_content_server\Entity\SharedContentSource;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -34,7 +34,7 @@ class SourceMigrationDeriver extends DeriverBase implements DeriverInterface, Co
   /**
    * SourceMigrationDeriver constructor.
    *
-   * @param \Drupal\Core\Entity\EntityTypeManager $entityTypeManager
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   EntityTypeManager service instance.
    * @param \Symfony\Component\HttpFoundation\RequestStack $requestStack
    *   Request stack.
@@ -42,10 +42,11 @@ class SourceMigrationDeriver extends DeriverBase implements DeriverInterface, Co
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
-  public function __construct(EntityTypeManager $entityTypeManager, RequestStack $requestStack) {
+  public function __construct(EntityTypeManagerInterface $entityTypeManager, RequestStack $requestStack) {
     $this->sharedContentStorage = $entityTypeManager
       ->getStorage('shared_content_source')
       ->getQuery()
+      ->accessCheck(FALSE)
       ->condition('sync_enabled', 1);
     $this->request = $requestStack->getCurrentRequest();
   }

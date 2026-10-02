@@ -12,7 +12,7 @@ function openy_gc_personal_training_post_update_personal_trainings(&$sandbox) {
   $entity_type = 'personal_training';
   $storage = \Drupal::entityTypeManager()->getStorage($entity_type);
   if (!isset($sandbox['max'])) {
-    $query = $storage->getQuery()->notExists('type');
+    $query = $storage->getQuery()->accessCheck(FALSE)->notExists('type');
     $sandbox['ids'] = $query->execute();
     $sandbox['max'] = $query->count()->execute();
   }
@@ -46,12 +46,14 @@ function openy_gc_personal_training_post_update_init_owners(&$sandbox) {
     $sandbox['progress'] = 0;
     $sandbox['current'] = 0;
     $sandbox['max'] = $storage->getQuery()
+      ->accessCheck(FALSE)
       ->notExists('uid')
       ->count()
       ->execute();
   }
 
   $ids = $storage->getQuery()
+    ->accessCheck(FALSE)
     ->notExists('uid')
     ->condition('id', $sandbox['current'], '>')
     ->range(0, 20)

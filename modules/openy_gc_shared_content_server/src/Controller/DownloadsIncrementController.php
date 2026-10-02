@@ -59,6 +59,7 @@ class DownloadsIncrementController extends ControllerBase {
     $ids = $this->entityTypeManager
       ->getStorage('shared_content_source')
       ->getQuery()
+      ->accessCheck(FALSE)
       ->condition('url', $client_url)
       ->execute();
     $id = reset($ids);

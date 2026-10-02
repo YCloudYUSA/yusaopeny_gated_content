@@ -263,6 +263,7 @@ class PersonalTrainingSeriesManager implements PersonalTrainingSeriesManagerInte
       $context['sandbox']['progress'] = 0;
       $context['sandbox']['current'] = 0;
       $context['sandbox']['max'] = $storage->getQuery()
+        ->accessCheck(FALSE)
         ->condition('type', 'personal_training')
         ->condition('field_parent', $series_id)
         ->count()
@@ -271,6 +272,7 @@ class PersonalTrainingSeriesManager implements PersonalTrainingSeriesManagerInte
     }
 
     $ids = $storage->getQuery()
+      ->accessCheck(FALSE)
       ->condition('type', 'personal_training')
       ->condition('field_parent', $series_id)
       ->condition('id', $context['sandbox']['current'], '>')
@@ -307,6 +309,7 @@ class PersonalTrainingSeriesManager implements PersonalTrainingSeriesManagerInte
       $context['sandbox']['progress'] = 0;
       $context['sandbox']['current'] = 0;
       $context['sandbox']['max'] = $storage->getQuery()
+        ->accessCheck(FALSE)
         ->condition('type', 'personal_training')
         ->condition('field_parent', $series_id)
         ->count()
@@ -315,6 +318,7 @@ class PersonalTrainingSeriesManager implements PersonalTrainingSeriesManagerInte
     }
 
     $ids = $storage->getQuery()
+      ->accessCheck(FALSE)
       ->condition('type', 'personal_training')
       ->condition('field_parent', $series_id)
       ->condition('id', $context['sandbox']['current'], '>')
@@ -348,6 +352,7 @@ class PersonalTrainingSeriesManager implements PersonalTrainingSeriesManagerInte
       $context['sandbox']['progress'] = 0;
       $context['sandbox']['current'] = 0;
       $context['sandbox']['max'] = $storage->getQuery()
+        ->accessCheck(FALSE)
         ->condition('type', 'personal_training')
         ->condition('field_parent', $series_id)
         ->count()
@@ -356,6 +361,7 @@ class PersonalTrainingSeriesManager implements PersonalTrainingSeriesManagerInte
     }
 
     $ids = $storage->getQuery()
+      ->accessCheck(FALSE)
       ->condition('type', 'personal_training')
       ->condition('field_parent', $series_id)
       ->condition('id', $context['sandbox']['current'], '>')

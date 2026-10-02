@@ -77,6 +77,7 @@ class VirtualYVideo extends SharedContentSourceTypeBase {
   public function entityExists($uuid) {
     $exists = $this->entityTypeManager->getStorage($this->getEntityType())
       ->getQuery()
+      ->accessCheck(FALSE)
       ->condition('type', $this->getEntityBundle())
       ->condition('uuid', $uuid)
       ->execute();
