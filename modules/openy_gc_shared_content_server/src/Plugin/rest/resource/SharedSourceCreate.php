@@ -132,6 +132,7 @@ class SharedSourceCreate extends ResourceBase implements ContainerFactoryPluginI
         ->toString();
       $user_storage = $this->entityTypeManager->getStorage('user');
       $ids = $user_storage->getQuery()
+        ->accessCheck(FALSE)
         ->condition('status', 1)
         ->condition('roles', 'administrator')
         // Limit by 20 users.

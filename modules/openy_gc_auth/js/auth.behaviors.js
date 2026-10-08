@@ -1,4 +1,4 @@
-(function ($, Drupal, cookies) {
+(function (Drupal) {
  Drupal.behaviors.openy_gc_auth_store_hash = {
    attach: function (context) {
      // Only run this script on full documents, not ajax requests.
@@ -8,7 +8,11 @@
      if (!window.location.hash || window.location.hash === '#') {
        return;
      }
-     cookies.set('openy_gc_auth_destination', window.location.hash);
+     // Same value and attributes js-cookie wrote: path=/, session cookie, and
+     // its encoding, which keeps characters like # and / readable.
+     var value = encodeURIComponent(window.location.hash)
+       .replace(/%(2[346BF]|3[AC-F]|40|5[BDE]|60|7[BCD])/g, decodeURIComponent);
+     document.cookie = 'openy_gc_auth_destination=' + value + '; path=/';
    }
  }
-})(jQuery, Drupal, window.Cookies);
+})(Drupal);

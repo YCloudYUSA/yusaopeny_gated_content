@@ -39,7 +39,7 @@ class LogController extends ControllerBase {
    */
   public function __construct(
     LoggerChannelFactoryInterface $loggerFactory,
-    Logger $gcLogger = NULL
+    ?Logger $gcLogger = NULL
   ) {
     $this->logger = $loggerFactory->get('openy_gc_log');
     $this->gcLogger = $gcLogger;

@@ -4,7 +4,7 @@ namespace Drupal\openy_gc_log;
 
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Datetime\DateFormatterInterface;
-use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\File\FileSystem;
 use Drupal\Core\File\FileSystemInterface;
@@ -74,7 +74,7 @@ class LogArchiver {
   /**
    * Entity Type Manager to work with.
    *
-   * @var \Drupal\Core\Entity\EntityTypeManager
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   private $entityTypeManager;
 
@@ -130,7 +130,7 @@ class LogArchiver {
   /**
    * LogArchiver constructor.
    *
-   * @param \Drupal\Core\Entity\EntityTypeManager $entityTypeManager
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   EntityTypeManager.
    * @param \Drupal\Core\Logger\LoggerChannel $logger
    *   LoggerChannel.
@@ -148,7 +148,7 @@ class LogArchiver {
    *   The Gated Content Logger.
    */
   public function __construct(
-    EntityTypeManager $entityTypeManager,
+    EntityTypeManagerInterface $entityTypeManager,
     LoggerChannel $logger,
     ConfigFactory $configFactory,
     FileSystemInterface $fileSystem,

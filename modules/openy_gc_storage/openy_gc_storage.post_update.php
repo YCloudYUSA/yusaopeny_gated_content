@@ -45,6 +45,7 @@ function _openy_gc_storage_migrate_instructors(&$sandbox, string $entity_type, s
     foreach ($instructorNames as $instructorName) {
       $trimmedName = trim($instructorName);
       $instructorsIds = $termStorage->getQuery()
+        ->accessCheck(FALSE)
         ->condition('name', $trimmedName)
         ->range(0, 1)
         ->execute();
@@ -175,7 +176,7 @@ function _openy_gc_storage_build_duration_references(&$sandbox) {
 
     // Collect all duration terms, sorted by minimum duration value.
     $taxonomy_storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
-    $query = $taxonomy_storage->getQuery();
+    $query = $taxonomy_storage->getQuery()->accessCheck(FALSE);
     $query->condition('vid', 'gc_duration')
       ->sort('field_gc_duration_min', 'ASC');
     $duration_terms_ids = $query->execute();

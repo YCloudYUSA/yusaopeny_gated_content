@@ -460,6 +460,7 @@ class SharedContentSourceTypeBase extends PluginBase implements SharedContentSou
     // Search existing media by uuid and bundle.
     $exists = $this->entityTypeManager->getStorage('media')
       ->getQuery()
+      ->accessCheck(FALSE)
       ->condition('bundle', $bundle)
       ->condition('uuid', $data['id'])
       ->execute();
@@ -516,6 +517,7 @@ class SharedContentSourceTypeBase extends PluginBase implements SharedContentSou
   public function saveTaxonomyFromSource($data, $bundle) {
     $exists = $this->entityTypeManager->getStorage('taxonomy_term')
       ->getQuery()
+      ->accessCheck(FALSE)
       ->condition('vid', $bundle)
       ->condition('name', $data['attributes']['name'])
       ->condition('status', 1)

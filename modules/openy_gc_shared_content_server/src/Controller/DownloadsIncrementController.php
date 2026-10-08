@@ -53,12 +53,13 @@ class DownloadsIncrementController extends ControllerBase {
 
     $status = 'ok';
 
-    $token = $request->get('token');
-    $uuid = $request->get('uuid');
-    $client_url = $request->get('client_url');
+    $token = $request->request->get('token');
+    $uuid = $request->request->get('uuid');
+    $client_url = $request->request->get('client_url');
     $ids = $this->entityTypeManager
       ->getStorage('shared_content_source')
       ->getQuery()
+      ->accessCheck(FALSE)
       ->condition('url', $client_url)
       ->execute();
     $id = reset($ids);

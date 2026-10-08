@@ -31,6 +31,7 @@ class SourceRepository {
    */
   public function loadAll() {
     $source_ids = $this->storage->getQuery()
+      ->accessCheck(FALSE)
       ->sort('name', 'ASC')
       ->execute();
     if (!$source_ids) {
